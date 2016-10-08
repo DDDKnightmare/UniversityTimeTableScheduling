@@ -47,7 +47,7 @@ public class Disciplina {
     private final int tipoSalaPratica;
     private final int codCurso;
     
-    private int[] timeSlotsMust;
+    private int[] timeSlotsMust = null;
     
     public void setTimeSlotsMust(int[] timeSlots){
         timeSlotsMust = timeSlots;
