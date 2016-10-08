@@ -26,8 +26,8 @@ public class Professor {
         return professores.get(indice);
     }
     
-    public Professor(int[] timeSlotsIndisponiveis, int[]disciplinasMinistraveis, int codProfessor, String nomeProfessor){
-        this.timeSlotsIndisponiveis = timeSlotsIndisponiveis;
+    public Professor( int[]disciplinasMinistraveis, int codProfessor, String nomeProfessor){
+        
         this.disciplinasMinistraveis = disciplinasMinistraveis;
         this.codProfessor = codProfessor;
         this.nomeProfessor = nomeProfessor;
@@ -41,6 +41,10 @@ public class Professor {
     public int[] getTimeSlotsIndisponiveis(){
         return timeSlotsIndisponiveis;
     }    
+    
+    public void setTimeSlotsIndisponiveis(int[] timeSlotsIndisponiveis){
+        this.timeSlotsIndisponiveis = timeSlotsIndisponiveis;
+    }
     
     public int[] getDisciplinasMinistraveis(){
         return disciplinasMinistraveis;
