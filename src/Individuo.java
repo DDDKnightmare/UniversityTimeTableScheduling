@@ -25,24 +25,7 @@ public class Individuo {
     
 // Fim RNG
         
-//Timeslots
-    public static final int t6 = 0;
-    public static final int t7 = 1;
-    public static final int t8 = 2;
-    public static final int t9 = 3;
-    public static final int t10 = 4;
-    public static final int t11 = 5;
-    public static final int t13 = 6;
-    public static final int t14 = 7;
-    public static final int t15 = 8;
-    public static final int t16 = 9;
-    public static final int t17 = 10;
-    public static final int t18 = 11;
-    public static final int t19 = 12;
-    public static final int t20 = 13;
-    public static final int t21 = 14;
-//Fim TimeSlots
-    
+
 //Dias da Semana
     public static final int seg = 0;
     public static final int ter = 1;
@@ -100,7 +83,7 @@ public class Individuo {
     }
     
     
-    public Gene[][][] horario = new Gene[6][15][32];
+    public Gene[][][] horario = new Gene[7][24][32];
     
     
     public Disciplina sorteiaDisciplinas(Disciplina[] disciplinas){

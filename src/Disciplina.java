@@ -8,7 +8,28 @@
  *
  * @author GMTH
  */
+import java.util.ArrayList;
+
 public class Disciplina {
+    
+    private static ArrayList<Disciplina> disciplinas = new ArrayList<Disciplina>();
+    
+    public static Disciplina getDisciplina(int indice){
+        return disciplinas.get(indice);
+    }
+    
+    public static void addDisciplina(Disciplina disciplina){
+        disciplinas.add(disciplina);
+    }
+    
+    public static int getNumDisciplinas(){
+        return disciplinas.size();
+    }
+    
+    public Disciplina(int cargaTeorica, int cargaPratica){
+        
+    }
+    
     
     private int professor;
     private int cargaTeorica;

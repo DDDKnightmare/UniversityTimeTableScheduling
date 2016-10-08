@@ -7,8 +7,27 @@
 /**
  *
  * @author GMTH
- */
+ */import java.util.ArrayList;
 public class Sala {
+    
+    private static ArrayList<Sala> salas = new ArrayList();
+    
+    public static void addSala(Sala sala){
+        salas.add(sala);
+    }
+    
+    public static int getNumSalas(){
+        return salas.size();
+    }
+    
+    public static Sala getSala(int indice){
+        return salas.get(indice);
+    }
+    
+    public Sala(int tipoSala,int[] horariosDisponiveis){
+        this.tipoSala = tipoSala;
+        this.horariosDisponiveis = horariosDisponiveis;
+    }
     
     private int tipoSala;
     
