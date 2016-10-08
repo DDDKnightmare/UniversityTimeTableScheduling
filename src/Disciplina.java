@@ -26,16 +26,27 @@ public class Disciplina {
         return disciplinas.size();
     }
     
-    public Disciplina(int cargaTeorica, int cargaPratica){
-        
+    public Disciplina(String nomeDisciplina,int cargaTeorica, int cargaPratica, int codCurso, int codDisciplina, int periodo,int tipoSalaTeorica, int tipoSalaPratica){
+        this.cargaTeorica = cargaTeorica;
+        this.cargaPratica = cargaPratica;
+        this.tipoSalaTeorica = tipoSalaTeorica;
+        this.codCurso = codCurso;
+        this.codDisciplina = codDisciplina;
+        this.periodo = periodo;
+        this.tipoSalaPratica = tipoSalaPratica;
+        this.nomeDisciplina = nomeDisciplina;
     }
     
-    
+    private final int codDisciplina;
+    private final int periodo;
+    private final String nomeDisciplina;
     private int professor;
-    private int cargaTeorica;
-    private int cargaPratica;
-    private int salaTeorica;
-    private int salaPratica;
+    private final int cargaTeorica;
+    private final int cargaPratica;
+    private final int tipoSalaTeorica;
+    private final int tipoSalaPratica;
+    private final int codCurso;
+    
     
     private int[] timeSlotsTeorica;
     private int[] timeSlotsPratica;
@@ -49,8 +60,8 @@ public class Disciplina {
         return aux;
     }
     
-    public int[] getSalas(){
-        int[] aux = {salaTeorica,salaPratica};
+    public int[] getTipoSalas(){
+        int[] aux = {tipoSalaTeorica,tipoSalaPratica};
         return aux;
     }
     

@@ -21,9 +21,15 @@ public class Estudante {
         return estudantes.get(indice);
     }
     
-    int codEstudante;
-    String nomeEstudante;
-    int[] disciplinasACursar;
+    public Estudante(int codEstudante, String nomeEstudante, int[] disciplinasACursar){
+        this.codEstudante = codEstudante;
+        this.nomeEstudante = nomeEstudante;
+        this.disciplinasACursar = disciplinasACursar;
+    }
+    
+    private final int codEstudante;
+    private final String nomeEstudante;
+    private final int[] disciplinasACursar;
     boolean[] matriculado;
     
     

@@ -26,13 +26,16 @@ public class Professor {
         return professores.get(indice);
     }
     
-    public Professor(int[] timeSlotsIndisponiveis, int[]disciplinasMinistraveis){
+    public Professor(int[] timeSlotsIndisponiveis, int[]disciplinasMinistraveis, int codProfessor, String nomeProfessor){
         this.timeSlotsIndisponiveis = timeSlotsIndisponiveis;
         this.disciplinasMinistraveis = disciplinasMinistraveis;
+        this.codProfessor = codProfessor;
+        this.nomeProfessor = nomeProfessor;
     }
-    
+    private final int codProfessor;
+    private final String nomeProfessor;
     private int[] timeSlotsIndisponiveis;
-    private int[] disciplinasMinistraveis;
+    private final int[] disciplinasMinistraveis;
     private int[] disciplinasMinistradas = new int[5];
     
     public int[] getTimeSlotsIndisponiveis(){

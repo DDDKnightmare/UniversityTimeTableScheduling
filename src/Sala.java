@@ -24,22 +24,37 @@ public class Sala {
         return salas.get(indice);
     }
     
-    public Sala(int tipoSala,int[] horariosDisponiveis){
+    public Sala(int tipoSala,int capacidade, String nomeSala){
         this.tipoSala = tipoSala;
-        this.horariosDisponiveis = horariosDisponiveis;
+        this.capacidade = capacidade;
+        this.nomeSala = nomeSala;
+        this.ocupacao = 0;
     }
     
     private int tipoSala;
-    
-    private int[] horariosDisponiveis;
+    private String nomeSala;
+    private int ocupacao;
+    private int capacidade;
    
+    
+    public boolean addEstudante(){
+        if(ocupacao < capacidade){
+            ocupacao ++;
+            return true;
+        }
+        return false;
+    }
+    
+    public void removeEstudante(){
+        ocupacao--;
+    }
     
     public int getTipoSala(){
         return tipoSala;
     }
     
-    public int[] getHorariosDisponiveis(){
-        return horariosDisponiveis;
+    public int getVagas(){
+        return (capacidade - ocupacao);
     }
     
     
