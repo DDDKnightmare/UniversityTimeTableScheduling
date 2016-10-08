@@ -103,6 +103,9 @@ public class Individuo {
     public Object[][][] horario = new Object[6][15][32];
     
     
+    
+    
+    
     public boolean verificaDisponibilidade(int cursoPeriodo,int timeSlot){
         int diaHora[] = mapaTimeSlot(timeSlot);
         
@@ -114,10 +117,10 @@ public class Individuo {
     
     
     
-    public boolean verificaDispProf(int timeSlot){
+    public boolean verificaDispProf(int timeSlot,int professor){
         int[] aux = mapaTimeSlot(timeSlot);
         for(int i = 0; i< 32; i++){
-            if(verificaProfessor(horario[aux[0]][aux[1]][i])){
+            if((horario[aux[0]][aux[1]][i]).getProfessor() == professor){
                 return false;
             }
         }
