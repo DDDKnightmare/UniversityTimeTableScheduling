@@ -16,7 +16,8 @@ public class Disciplina {
     private int salaTeorica;
     private int salaPratica;
     
-    private int[] timeSlots;
+    private int[] timeSlotsTeorica;
+    private int[] timeSlotsPratica;
     
     public int getProfessor(){
         return professor;
@@ -32,12 +33,17 @@ public class Disciplina {
         return aux;
     }
     
-    public int[] getTimeSlots(){
-        return timeSlots;
+    public int[][] getTimeSlots(){
+        int[][] aux = {timeSlotsTeorica,timeSlotsPratica};
+        return aux;
     }
     
-    public void setTimeSlots(int indice,int timeSlot){
-        timeSlots[indice] = timeSlot;
+    public void setTimeSlotsTeorica(int indice,int timeSlot){
+        timeSlotsTeorica[indice] = timeSlot;
+    }
+    
+    public void setTimeSlotsPratica(int indice,int timeSlot){
+        timeSlotsPratica[indice] = timeSlot;
     }
     
     
