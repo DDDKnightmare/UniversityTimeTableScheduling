@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package src;
+
 
 import java.util.Objects;
 import java.util.Random;
@@ -100,7 +100,7 @@ public class Individuo {
     }
     
     
-    public Object[][][] horario = new Object[6][15][32];
+    public Gene[][][] horario = new Gene[6][15][32];
     
     
     
