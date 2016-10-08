@@ -117,7 +117,7 @@ public class Individuo {
     
     
     
-    public boolean verificaDispProf(int timeSlot,int professor){
+    public boolean verificaDispProf(int timeSlot,Professor professor){
         int[] aux = mapaTimeSlot(timeSlot);
         for(int i = 0; i< 32; i++){
             if((horario[aux[0]][aux[1]][i]).getProfessor() == professor){
