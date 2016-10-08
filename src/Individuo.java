@@ -103,7 +103,10 @@ public class Individuo {
     public Gene[][][] horario = new Gene[6][15][32];
     
     
-    
+    public Disciplina sorteiaDisciplinas(Disciplina[] disciplinas){
+        Disciplina aux = randomElement(disciplinas);
+        return aux;
+    }
     
     
     public boolean verificaDisponibilidade(int cursoPeriodo,int timeSlot){
