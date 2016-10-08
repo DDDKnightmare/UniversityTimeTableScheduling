@@ -14,7 +14,7 @@ public class Disciplina {
     
     private static ArrayList<Disciplina> disciplinas = new ArrayList<Disciplina>();
     
-    public static Disciplina getDisciplina(int indice){
+    public static Disciplina getDisciplina(short indice){
         return disciplinas.get(indice);
     }
     
@@ -22,65 +22,80 @@ public class Disciplina {
         disciplinas.add(disciplina);
     }
     
-    public static int getNumDisciplinas(){
-        return disciplinas.size();
+    public static short getNumDisciplinas(){
+        return (short)disciplinas.size();
     }
     
-    public Disciplina(String nomeDisciplina,int cargaTeorica, int cargaPratica, int codCurso, int codDisciplina, int periodo,int tipoSalaTeorica, int tipoSalaPratica){
-        this.cargaTeorica = cargaTeorica;
-        this.cargaPratica = cargaPratica;
-        this.tipoSalaTeorica = tipoSalaTeorica;
+    public Disciplina(short codCurso, short codDisciplina){
+//        this.cargaTeorica = cargaTeorica;
+//        this.cargaPratica = cargaPratica;
+//        this.tipoSalaTeorica = tipoSalaTeorica;
         this.codCurso = codCurso;
         this.codDisciplina = codDisciplina;
-        this.periodo = periodo;
-        this.tipoSalaPratica = tipoSalaPratica;
-        this.nomeDisciplina = nomeDisciplina;
+//        this.periodo = periodo;
+//        this.tipoSalaPratica = tipoSalaPratica;
+//        this.nomeDisciplina = nomeDisciplina;
     }
     
-    private final int codDisciplina;
-    private final int periodo;
-    private final String nomeDisciplina;
-    private int professor;
-    private final int cargaTeorica;
-    private final int cargaPratica;
-    private final int tipoSalaTeorica;
-    private final int tipoSalaPratica;
-    private final int codCurso;
+    private final short codDisciplina;
+//    private final short periodo;
+//    private final String nomeDisciplina;
+    private short professor;
+//    private final short cargaTeorica;
+//    private final short cargaPratica;
+//    private final short tipoSalaTeorica;
+//    private final short tipoSalaPratica;
+    private final short codCurso;
     
-    private int[] timeSlotsMust = null;
+    private short[] timeSlotsMust = null;
     
-    public void setTimeSlotsMust(int[] timeSlots){
+    public void setTimeSlotsMust(short[] timeSlots){
         timeSlotsMust = timeSlots;
     }
     
     
-    private int[] timeSlotsTeorica;
-    private int[] timeSlotsPratica;
+    private short[] timeSlotsTeorica;
+    private short[] timeSlotsPratica;
     
-    public int getProfessor(){
+    public short getProfessor(){
         return professor;
     }
     
-    public int[] getCargaHoraria(){
-        int[] aux = {cargaTeorica,cargaPratica};
+    public short[] getCargaHoraria(){
+        if(StaticData.disciplinas.containsKey(this.codCurso)){
+            short[] aux = {StaticData.disciplinas.get(this.codCurso).getCargaTeorica(),
+                         StaticData.disciplinas.get(this.codCurso).getCargaPratica()};
+            return aux;
+        }else{
+            //Erro: Disciplina não foi cadastrada na hashtable;
+            return null;
+        }
+        
+        
+    }
+    
+    public short[] getTipoSalas(){
+        if(StaticData.disciplinas.containsKey(this.codCurso)){
+            short[] aux = {StaticData.disciplinas.get(this.codCurso).getTipoSalaTeorica(),
+                         StaticData.disciplinas.get(this.codCurso).getTipoSalaPratica()};
+            return aux;
+        }
+        else{
+            return null;
+        }
+        
+    }
+    
+    public short[][] getTimeSlots(){
+        short[][] aux = {timeSlotsTeorica,timeSlotsPratica};
         return aux;
     }
     
-    public int[] getTipoSalas(){
-        int[] aux = {tipoSalaTeorica,tipoSalaPratica};
-        return aux;
-    }
-    
-    public int[][] getTimeSlots(){
-        int[][] aux = {timeSlotsTeorica,timeSlotsPratica};
-        return aux;
-    }
-    
-    public void setTimeSlotsTeorica(int indice,int timeSlot){
+    public void setTimeSlotsTeorica(short indice,short timeSlot){
         timeSlotsTeorica[indice] = timeSlot;
     }
     
-    public void setTimeSlotsPratica(int indice,int timeSlot){
+    public void setTimeSlotsPratica(short indice,short timeSlot){
         timeSlotsPratica[indice] = timeSlot;
     }
     

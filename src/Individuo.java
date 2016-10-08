@@ -18,7 +18,7 @@ public class Individuo {
     
     
     
-    private int nota = 9500;
+    private short nota = 9500;
     
 // RNG
     Random rng = new Random();
@@ -35,10 +35,10 @@ public class Individuo {
 
     
     
-    public int[] mapaTimeSlot(int timeSlot){
-        int[] retorno = new int[2];
-        retorno[0] = (timeSlot - 1)/24 + 1;
-        retorno[1]= (timeSlot-1)%24 + 1;
+    public short[] mapaTimeSlot(short timeSlot){
+        short[] retorno = new short[2];
+        retorno[0] = (short)((timeSlot - 1)/24 + 1);
+        retorno[1]= (short)((timeSlot-1)%24 + 1);
         
         return retorno;
     }
@@ -53,8 +53,8 @@ public class Individuo {
     }
     
     
-    public boolean verificaDisponibilidade(int cursoPeriodo,int timeSlot){
-        int diaHora[] = mapaTimeSlot(timeSlot);
+    public boolean verificaDisponibilidade(short cursoPeriodo,short timeSlot){
+        short diaHora[] = mapaTimeSlot(timeSlot);
         
         if(Objects.isNull(horario[diaHora[0]][diaHora[1]][cursoPeriodo]))
             return true;
@@ -64,9 +64,9 @@ public class Individuo {
     
     
     
-    public boolean verificaDispProf(int timeSlot,Professor professor){
-        int[] aux = mapaTimeSlot(timeSlot);
-        for(int i = 0; i< 32; i++){
+    public boolean verificaDispProf(short timeSlot,Professor professor){
+        short[] aux = mapaTimeSlot(timeSlot);
+        for(short i = 0; i< 32; i++){
             if((horario[aux[0]][aux[1]][i]).getProfessor() == professor){
                 return false;
             }

@@ -16,29 +16,27 @@ public class Sala {
         salas.add(sala);
     }
     
-    public static int getNumSalas(){
-        return salas.size();
+    public static short getNumSalas(){
+        return (short)salas.size();
     }
     
-    public static Sala getSala(int indice){
+    public static Sala getSala(short indice){
         return salas.get(indice);
     }
     
-    public Sala(int tipoSala,int capacidade, String nomeSala){
-        this.tipoSala = tipoSala;
-        this.capacidade = capacidade;
-        this.nomeSala = nomeSala;
+    public Sala(short codSala){
+        this.codSala = codSala;
         this.ocupacao = 0;
     }
-    
-    private int tipoSala;
-    private String nomeSala;
-    private int ocupacao;
-    private int capacidade;
+    private short codSala;
+//    private short tipoSala;
+//    private String nomeSala;
+    private short ocupacao;
+//    private short capacidade;
    
     
     public boolean addEstudante(){
-        if(ocupacao < capacidade){
+        if(ocupacao < StaticData.salas.get(this.codSala).getCapacidade()){
             ocupacao ++;
             return true;
         }
@@ -49,12 +47,12 @@ public class Sala {
         ocupacao--;
     }
     
-    public int getTipoSala(){
-        return tipoSala;
+    public short getTipoSala(){
+        return StaticData.salas.get(this.codSala).getTipoSala();
     }
     
-    public int getVagas(){
-        return (capacidade - ocupacao);
+    public short getVagas(){
+        return (short)(StaticData.salas.get(this.codSala).getTipoSala() - ocupacao);
     }
     
     

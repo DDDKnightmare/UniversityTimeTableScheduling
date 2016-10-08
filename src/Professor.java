@@ -18,43 +18,43 @@ public class Professor {
         professores.add(professor);
     }
     
-    public static int getNumProfessores(){
-        return professores.size();
+    public static short getNumProfessores(){
+        return (short)professores.size();
     }
     
-    public static Professor getProfessor(int indice){
+    public static Professor getProfessor(short indice){
         return professores.get(indice);
     }
     
-    public Professor( int[]disciplinasMinistraveis, int codProfessor, String nomeProfessor){
+    public Professor( short codProfessor){
         
-        this.disciplinasMinistraveis = disciplinasMinistraveis;
+//        this.disciplinasMinistraveis = disciplinasMinistraveis;
         this.codProfessor = codProfessor;
-        this.nomeProfessor = nomeProfessor;
+//        this.nomeProfessor = nomeProfessor;
     }
-    private final int codProfessor;
-    private final String nomeProfessor;
-    private int[] timeSlotsIndisponiveis;
-    private final int[] disciplinasMinistraveis;
-    private int[] disciplinasMinistradas = new int[5];
+    private final short codProfessor;
+//    private final String nomeProfessor;
+//    private short[] timeSlotsIndisponiveis;
+//    private final short[] disciplinasMinistraveis;
+    private short[] disciplinasMinistradas = new short[5];
     
-    public int[] getTimeSlotsIndisponiveis(){
-        return timeSlotsIndisponiveis;
+    public short[] getTimeSlotsIndisponiveis(){
+        return StaticData.professores.get(this.codProfessor).getTimeSlotsIndisponiveis();
     }    
     
-    public void setTimeSlotsIndisponiveis(int[] timeSlotsIndisponiveis){
-        this.timeSlotsIndisponiveis = timeSlotsIndisponiveis;
+    public void setTimeSlotsIndisponiveis(short[] timeSlotsIndisponiveis){
+        StaticData.professores.get(this.codProfessor).setTimeSlotsIndisponiveis(timeSlotsIndisponiveis);
     }
     
-    public int[] getDisciplinasMinistraveis(){
-        return disciplinasMinistraveis;
+    public short[] getDisciplinasMinistraveis(){
+        return StaticData.professores.get(this.codProfessor).getDisciplinasACursarOuMinistrar();
     }
     
-    public int[] getDisciplinasMinistradas(){
+    public short[] getDisciplinasMinistradas(){
         return disciplinasMinistradas;
     }
     
-    public void setDisciplinasMinistradas(int indice, int disciplina){
+    public void setDisciplinasMinistradas(short indice, short disciplina){
         disciplinasMinistradas[indice] = disciplina;
     }
     

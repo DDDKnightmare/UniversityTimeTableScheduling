@@ -13,18 +13,29 @@ public class Curso {
     
     private static ArrayList<Curso> cursos = new ArrayList<>();
     
-    public Curso(int codCurso, int codTurno, int numPeriodos, String nomeCurso){
+    public Curso(short codCurso, short codTurno, short numPeriodos, String nomeCurso){
         this.codCurso = codCurso;
         this.codTurno = codTurno;
         this.numPeriodos = numPeriodos;
         this.nomeCurso = nomeCurso;
     }
+    public short getCodCurso(){
+        return this.codCurso;
+    }
+    public short getTurno(){
+        return this.codTurno;
+    }
+    public short getNumPeriodos(){
+        return this.numPeriodos;
+    }
+    public String getNomeCurso(){
+        return this.nomeCurso;
+    }
     
     
-    
-    private final int codCurso;
-    private final int codTurno;
-    private final int numPeriodos;
+    private final short codCurso;
+    private final short codTurno;
+    private final short numPeriodos;
     private final String nomeCurso;
     
     
