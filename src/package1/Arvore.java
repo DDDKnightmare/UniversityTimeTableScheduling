@@ -110,6 +110,7 @@ public class Arvore {
                         if(Objects.isNull(guide.getLeft())){
                             guide.getPai().setLeft(guide.getRight());
                             guide.getRight().setPai(guide.getPai());
+                            break;
                         }
                         
                         guide.getPai().setLeft(guide.getRight());
@@ -120,6 +121,7 @@ public class Arvore {
                         }
                         guide.getLeft().setPai(x);
                         x.setLeft(guide.getLeft());
+                        break;
                         
                         
                     }
@@ -131,6 +133,7 @@ public class Arvore {
                         if(Objects.isNull(guide.getLeft())){
                             guide.getPai().setRight(guide.getRight());
                             guide.getRight().setPai(guide.getPai());
+                            break;
                         }
                         
                         guide.getPai().setRight(guide.getLeft());
@@ -141,6 +144,7 @@ public class Arvore {
                         }
                         guide.getRight().setPai(x);
                         x.setRight(guide.getRight());
+                        break;
                 }
             }
             
