@@ -15,11 +15,15 @@ import java.util.Objects;
  */
 public class Arvore {
     
-    private static No raiz;
+    private static No raiz = null;
     
     
     public static void addNo(Individuo individuo){
         No aux = raiz;
+        if(Objects.isNull(aux)){
+            raiz = new No(individuo);
+            return ;
+        }
         boolean Switch = false;
         while(true){
             
