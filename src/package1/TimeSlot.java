@@ -13,18 +13,5 @@ public class TimeSlot {
         this.horarioInicial = horarioInicial;
         this.horarioTermino = horarioTermino;
     }
-    /***
-     * 
-     * @param codigoTurno
-     * @param diaSemana
-     * @return 
-     */
-    public static int[] timeSlotsNoTurno(int codigoTurno, int diaSemana){
-        switch(codigoTurno){
-            
-        }
-        
-        
-        
-    }
+    
 }

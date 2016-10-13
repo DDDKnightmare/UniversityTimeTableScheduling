@@ -11,7 +11,7 @@ public class Disciplina {
     public int cargaHorariaPratica;
     public int tipoSalaPratica;    
     public int qtdAlunos; // ---------------------------IMPLEMENTAR!!!!!!!!!!
-    
+    public int codigoTurno;
     
     List<TimeSlot>timesSlotsPossiveis;
     List<Professor> ProfessoresPodem;
