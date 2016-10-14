@@ -10,7 +10,6 @@ public class Disciplina {
     public int tipoSalaTeoria;
     public int cargaHorariaPratica;
     public int tipoSalaPratica;    
-    public int qtdAlunos; // ---------------------------IMPLEMENTAR!!!!!!!!!!
     public int codigoTurno;
     
     List<TimeSlot>timesSlotsPossiveis;

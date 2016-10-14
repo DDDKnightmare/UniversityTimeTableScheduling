@@ -71,7 +71,7 @@ public class LeitorDados {
             AddObject(line, separator);                
         }
         
-        System.out.println("concluÃ­do!");
+        System.out.println("concluído!");
     }         
     private boolean isSeparator(String line) {
         
@@ -114,12 +114,12 @@ public class LeitorDados {
 
     private void AddTimeSlot(String line) {
         
-        String[] timeSloteLine = line.split(",");     
+        String[] timeSlotLine = line.split(",");     
         
-        int codigo = Integer.parseInt(timeSloteLine[0].replaceAll(" ", ""));
-        int codigoDiaSemana = Integer.parseInt(timeSloteLine[1].replaceAll(" ", ""));
-        String horarioInicial = timeSloteLine[2];
-        String horarioTermino = timeSloteLine[3];        
+        int codigo = Integer.parseInt(timeSlotLine[0].replaceAll(" ", ""));
+        int codigoDiaSemana = Integer.parseInt(timeSlotLine[1].replaceAll(" ", ""));
+        String horarioInicial = timeSlotLine[2];
+        String horarioTermino = timeSlotLine[3];        
         
         TimeSlot timeSlot = new TimeSlot(codigo, codigoDiaSemana, horarioInicial, horarioTermino);
         TimeSlots.add(timeSlot);
@@ -127,12 +127,12 @@ public class LeitorDados {
 
     private void AddCurso(String line) {
         
-        String[] timeSloteLine = line.split(",");   
+        String[] timeSlotLine = line.split(",");   
         
-        int codigo = Integer.parseInt(timeSloteLine[0].replaceAll(" ", ""));
-        String nome = timeSloteLine[1];
-        int numeroPeriodos = Integer.parseInt(timeSloteLine[2].replaceAll(" ", ""));
-        int turno = Integer.parseInt(timeSloteLine[3].replaceAll(" ", ""));
+        int codigo = Integer.parseInt(timeSlotLine[0].replaceAll(" ", ""));
+        String nome = timeSlotLine[1];
+        int numeroPeriodos = Integer.parseInt(timeSlotLine[2].replaceAll(" ", ""));
+        int turno = Integer.parseInt(timeSlotLine[3].replaceAll(" ", ""));
         
         Curso curso = new Curso(codigo, nome, numeroPeriodos, turno);
         Cursos.add(curso);
@@ -140,10 +140,10 @@ public class LeitorDados {
 
     private void AddTipoSala(String line) {
         
-        String[] timeSloteLine = line.split(",");   
+        String[] timeSlotLine = line.split(",");   
         
-        int codigo = Integer.parseInt(timeSloteLine[0].replaceAll(" ", ""));
-        String descricao = timeSloteLine[1];
+        int codigo = Integer.parseInt(timeSlotLine[0].replaceAll(" ", ""));
+        String descricao = timeSlotLine[1];
         
         TipoDeSala tipoDeSala = new TipoDeSala(codigo, descricao);
         TiposDeSala.add(tipoDeSala);
@@ -151,12 +151,12 @@ public class LeitorDados {
 
     private void AddSala(String line) {
         
-        String[] timeSloteLine = line.split(",");   
+        String[] timeSlotLine = line.split(",");   
         
-        int codigo = Integer.parseInt(timeSloteLine[0].replaceAll(" ", ""));
-        String descricao = timeSloteLine[1];
-        int tipoDeSala = Integer.parseInt(timeSloteLine[2].replaceAll(" ", ""));
-        int capacidade = Integer.parseInt(timeSloteLine[3].replaceAll(" ", ""));
+        int codigo = Integer.parseInt(timeSlotLine[0].replaceAll(" ", ""));
+        String descricao = timeSlotLine[1];
+        int tipoDeSala = Integer.parseInt(timeSlotLine[2].replaceAll(" ", ""));
+        int capacidade = Integer.parseInt(timeSlotLine[3].replaceAll(" ", ""));
         
         Sala sala = new Sala(codigo, descricao, tipoDeSala, capacidade);
         Salas.add(sala);
@@ -164,16 +164,16 @@ public class LeitorDados {
 
     private void AddDisciplina(String line) {
         
-        String[] timeSloteLine = line.split(",");   
+        String[] timeSlotLine = line.split(",");   
         
-        int codigo = Integer.parseInt(timeSloteLine[0].replaceAll(" ", ""));
-        int codigoCurso = Integer.parseInt(timeSloteLine[1].replaceAll(" ", ""));
-        int codigoPeriodo = Integer.parseInt(timeSloteLine[2].replaceAll(" ", ""));
-        String descricao = timeSloteLine[3];
-        int cargaHorariaTeoria = Integer.parseInt(timeSloteLine[4].replaceAll(" ", ""));
-        int tipoSalaTeoria = Integer.parseInt(timeSloteLine[5].replaceAll(" ", ""));
-        int cargaHorariaPratica = Integer.parseInt(timeSloteLine[6].replaceAll(" ", ""));
-        int tipoSalaPratica = Integer.parseInt(timeSloteLine[7].replaceAll(" ", ""));    
+        int codigo = Integer.parseInt(timeSlotLine[0].replaceAll(" ", ""));
+        int codigoCurso = Integer.parseInt(timeSlotLine[1].replaceAll(" ", ""));
+        int codigoPeriodo = Integer.parseInt(timeSlotLine[2].replaceAll(" ", ""));
+        String descricao = timeSlotLine[3];
+        int cargaHorariaTeoria = Integer.parseInt(timeSlotLine[4].replaceAll(" ", ""));
+        int tipoSalaTeoria = Integer.parseInt(timeSlotLine[5].replaceAll(" ", ""));
+        int cargaHorariaPratica = Integer.parseInt(timeSlotLine[6].replaceAll(" ", ""));
+        int tipoSalaPratica = Integer.parseInt(timeSlotLine[7].replaceAll(" ", ""));    
         
         Disciplina disciplina = new Disciplina(codigo, codigoCurso, codigoPeriodo, descricao, 
                                                cargaHorariaTeoria, tipoSalaTeoria, 
@@ -184,16 +184,16 @@ public class LeitorDados {
     
     private void AddEstudante(String line) {
         try{
-        String[] timeSloteLine = line.split(",");   
+        String[] timeSlotLine = line.split(",");   
         
-        int codigo = Integer.parseInt(timeSloteLine[0].replaceAll(" ", ""));        
-        String nome = timeSloteLine[1];        
+        int codigo = Integer.parseInt(timeSlotLine[0].replaceAll(" ", ""));        
+        String nome = timeSlotLine[1];        
         List<Disciplina> disciplinasACursar = new ArrayList<>();
         
-        for(int i = 2; i < timeSloteLine.length; i++){
-            if(timeSloteLine[i].replaceAll(" ", "").equals(""))
+        for(int i = 2; i < timeSlotLine.length; i++){
+            if(timeSlotLine[i].replaceAll(" ", "").equals(""))
                 continue;            
-            int codigoDisciplina = Integer.parseInt(timeSloteLine[i].replaceAll(" ", ""));
+            int codigoDisciplina = Integer.parseInt(timeSlotLine[i].replaceAll(" ", ""));
             
             for(Disciplina d : Disciplinas)
                 if(d.codigo == codigoDisciplina)    
@@ -210,16 +210,16 @@ public class LeitorDados {
 
     private void AddProfessor(String line) {
         
-        String[] timeSloteLine = line.split(",");   
+        String[] timeSlotLine = line.split(",");   
         
-        int codigo = Integer.parseInt(timeSloteLine[0].replaceAll(" ", ""));
-        String nome = timeSloteLine[1];
+        int codigo = Integer.parseInt(timeSlotLine[0].replaceAll(" ", ""));
+        String nome = timeSlotLine[1];
         List<Disciplina> disciplinasAMinistrar = new ArrayList<>();
         
-        for(int i = 2; i < timeSloteLine.length; i++){
-            if(timeSloteLine[i].replaceAll(" ", "").equals(""))
+        for(int i = 2; i < timeSlotLine.length; i++){
+            if(timeSlotLine[i].replaceAll(" ", "").equals(""))
                 continue;
-             int codigoDisciplina = Integer.parseInt(timeSloteLine[i].replaceAll(" ", ""));
+             int codigoDisciplina = Integer.parseInt(timeSlotLine[i].replaceAll(" ", ""));
             
             for(Disciplina d : Disciplinas)
                 if(d.codigo == codigoDisciplina)    

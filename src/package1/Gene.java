@@ -19,6 +19,7 @@ public class Gene {
     private List<Estudante> estudantes;
     private List<TimeSlot> timeSlots; 
     private boolean aulaTeorica;
+    private int qtdEstudantes;
 //    public Gene(Professor professor, Sala sala, Disciplina disciplina, List<Short> estudantes){
 //        this.professor = professor;
 //        this.sala = sala;
@@ -46,6 +47,14 @@ public class Gene {
         this.professor = professor;
         this.disciplina = disciplina;
         this.timeSlots = timeSlots;
+    }
+    
+    public int getQtdEstudantes(){
+        return this.qtdEstudantes;
+    }
+    
+    public void setQtdEstudantes(int numEstudantes){
+        this.qtdEstudantes = numEstudantes;
     }
     
     public Gene(Gene gene){
