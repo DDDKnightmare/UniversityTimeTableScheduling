@@ -25,7 +25,7 @@ public class Individuo {
     private final short qtdPeriodos;
     private final LeitorDados ld;
     private short nota = 20000;
-    
+    private List<Gene> GenesNaoAlocados = new ArrayList<>();
 // RNG
     public static Random rng = new Random();
     
@@ -285,6 +285,167 @@ public class Individuo {
         return timeSlots;
     }
     
+    private List<Estudante> EstudantesParaMatricular(final Disciplina disciplina, final List<Estudante> estudantes){
+        List<Estudante> alunos = new ArrayList<>(estudantes);
+        
+        for(int i = 0; i< alunos.size(); i++){
+            if(!alunos.get(i).disciplinasACursar.contains(disciplina)){
+                    alunos.remove(i);
+                    i--;
+            }
+        }
+        
+        return alunos;
+    }
+    
+    private boolean MatriculaAlunos(Gene gene){
+        List<Estudante> estudantes = new ArrayList<>(EstudantesParaMatricular(gene.getDisciplina(),ld.Estudantes));
+        
+        
+        
+        for(int i =0; i < estudantes.size(); i++){
+            if(!VerificaDisponibilidadeEstudante(estudantes.get(i),gene.getTimeSlots())){
+                estudantes.remove(i);
+                i--;
+            }
+        }
+        if(estudantes.size() > 0){
+            gene.setEstudantes(estudantes);
+            return true;
+        }
+        return false;
+    }
+    /**
+     * 
+     * @param gene
+     * @return boolean {salaTeoricaAlocada, salaPraticaAlocada}
+     */
+    private boolean[] DefinirSala(Gene gene){
+        List<TimeSlot> timeSlotsTeorica = gene.getTimeSlots();
+        List<TimeSlot> timeSlotsPratica = new ArrayList<>();
+        int j = 0;
+        boolean[] retorno = {true,true}; // {teorica,pratica}
+        for(int i = 0; i < gene.getDisciplina().cargaHorariaPratica;i++){
+            timeSlotsPratica.add(timeSlotsTeorica.get(rng.nextInt(timeSlotsTeorica.size())));
+            timeSlotsTeorica.remove(i - j);
+            j++;
+        }
+        
+        gene.setTimeSlots(timeSlotsTeorica);
+        
+        List<Sala> salas = SalasPossiveis(timeSlotsTeorica,gene.getDisciplina().tipoSalaTeoria);
+        if(salas.size() > 0){
+            gene.setSala(salas.get(rng.nextInt(salas.size())));
+        }else{
+            this.GenesNaoAlocados.add(gene);
+            retorno[0] = false;
+            LeitorDadosEntrada.Erro(gene.getDisciplina().descricao+" sem sala disponível para aulas teoricas.");
+            
+        }
+        
+        
+        Gene pratica = new Gene(gene);
+        pratica.setTimeSlots(timeSlotsPratica);
+        
+        salas = SalasPossiveis(timeSlotsPratica,gene.getDisciplina().tipoSalaPratica);
+        if(salas.size() > 0){
+            pratica.setSala(salas.get(rng.nextInt(salas.size())));
+        }else{
+            this.GenesNaoAlocados.add(gene);
+            retorno[1] = false;
+            LeitorDadosEntrada.Erro(pratica.getDisciplina().descricao+" sem sala disponível para aulas praticas");
+        }
+        
+        CorrigeNumeroDeAlunos(gene);
+        
+        CorrigeNumeroDeAlunos(pratica);
+        
+        
+        return retorno;
+        
+    }
+    
+    /**
+     * Corrige o número de estudantes matriculados em uma disciplina após definir uma sala.
+     * @param gene 
+     */
+    private void CorrigeNumeroDeAlunos(Gene gene){
+        
+        if(Objects.isNull(gene.getSala())){
+            gene.getEstudantes().clear();
+        }else{
+            int capacidade = gene.getSala().capacidade;
+            int numEstudantes = gene.getEstudantes().size();
+            while(numEstudantes > capacidade){
+                
+                gene.getEstudantes().remove(rng.nextInt(numEstudantes));
+                numEstudantes--;
+            }
+        }
+        
+    }
+    
+    
+    
+    
+    /**
+     * 
+     * @param timeSlots
+     * @param tipoSala
+     * @return 
+     */
+    private List<Sala> SalasPossiveis(final List<TimeSlot> timeSlots, final int tipoSala){
+        List<Sala> salas = new ArrayList<>(ld.Salas);
+        Sala aux;
+        /**
+         * Separando as salas do tipo desejado
+         */
+        for(int i = 0; i< salas.size(); i++){
+            
+            if(salas.get(i).tipoDeSala != tipoSala){
+                salas.remove(i);
+                i--;
+            }else{
+                /**
+                * verificando disponibilidade
+                */
+                aux = salas.get(i);
+                
+                outraSala: // Label for the timeSlots loop
+                for(int j = 0; j< timeSlots.size();j++){
+                    for(int k = 0; k < this.qtdPeriodos; k++){
+                        if(!Objects.isNull(horario[timeSlots.get(j).codigo][k].getSala()) && horario[timeSlots.get(j).codigo][k].getSala()!= aux){
+                            
+                            salas.remove(i);
+                            i--;
+                            break outraSala;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return salas;
+        
+        
+    }
+    
+    
+    
+    private boolean VerificaDisponibilidadeEstudante(final Estudante estudante, final List<TimeSlot> timeSlots){
+        
+        for(int i = 0; i < timeSlots.size(); i++){
+            for(int j =0; j < this.qtdPeriodos; j++){
+                if(horario[i][j].getEstudantes().contains(estudante)){
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    
     private boolean CriaGeneDisciplina(Disciplina disciplina, boolean restricao) {
         
         List<Professor> professoresPossiveis = new ArrayList<>(disciplina.ProfessoresPodem);
@@ -355,7 +516,7 @@ public class Individuo {
         }
     }
     /**
-     * Implementar --> Coloca o gene na matriz.
+     * Coloca o gene na matriz.
      * @param gene
      * @param timeSlot
      * @param codigoPeriodo
@@ -363,6 +524,8 @@ public class Individuo {
     public void alocar(Gene gene, int timeSlot, int codigoPeriodo){
         horario[timeSlot][codigoPeriodo] = gene;
     }
+    
+    
     
     
 }
