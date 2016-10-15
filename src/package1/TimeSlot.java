@@ -14,4 +14,7 @@ public class TimeSlot {
         this.horarioTermino = horarioTermino;
     }
     
+    public String toString(){
+        return ""+codigo;
+    }
 }

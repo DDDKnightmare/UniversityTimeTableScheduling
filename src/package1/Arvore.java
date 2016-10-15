@@ -24,7 +24,7 @@ public class Arvore {
             raiz = new No(individuo);
             return ;
         }
-        boolean Switch = false;
+        While:
         while(true){
             
             if(individuo.getNota() < aux.getNota()){
@@ -50,10 +50,18 @@ public class Arvore {
                         if(Objects.isNull(aux.getLeft())){
                             aux.setLeft(new No(individuo));
                             aux.getLeft().setPai(aux);
-                            Switch = true;
+                            break While;
+                        }
+                        
+                        if(aux.getLeft().getNota() == aux.getNota()){
+                            aux = aux.getLeft();
                             break;
                         }
-                        aux = aux.getLeft();
+                        
+                        aux.getLeft().setPai(new No(individuo));
+                        aux.getLeft().getPai().setPai(aux);
+                        aux.setLeft(aux.getLeft().getPai());
+                        aux.getLeft().lSon = true;
                         break;
                         
                     case 1: // middle
@@ -64,22 +72,34 @@ public class Arvore {
                             aux.getPai().setPai(pai);
                             pai.setLeft(aux.getPai());
                             aux.getPai().setRight(aux);
-                            Switch = true;
-                            break;
+                            break While;
                         }
                         aux.lSon = true;
                         aux.setPai(new No(individuo));
                         aux.getPai().setPai(pai);
                         pai.setRight(aux.getPai());
                         aux.getPai().setLeft(aux);
-                        Switch = true;
-                        break;
+                        break While;
                         
+                    case 2: // right
+                        if(Objects.isNull(aux.getRight())){
+                            aux.setRight(new No(individuo));
+                            aux.getRight().setPai(aux);
+                            break While;
+                        }
+                        if(aux.getNota() == aux.getRight().getNota()){
+                            aux = aux.getRight();
+                            break While;
+                        }
+                        aux.getRight().setPai(new No(individuo));
+                        aux.getRight().getPai().setPai(aux);
+                        aux.setRight(aux.getRight().getPai());
+                        aux.getRight().lSon = false;
+                        
+                        break;
                 }
                 
-                if(Switch){
-                    break;
-                }
+                
             }
         
         }

@@ -15,61 +15,43 @@ public class LeitorDados {
     public List<TimeSlot> TimeSlots; 
     public List<Curso> Cursos; 
     public List<TipoDeSala> TiposDeSala;
-    public List<Sala> Salas; 
-    public List<Disciplina> Disciplinas; 
+    public List<Sala> Salas;   
+    public List<Disciplina> Disciplinas;
+    public List<Disciplina> DisciplinasComRestricao; 
+    public List<Disciplina> DisciplinasSemRestricao; 
     public List<Estudante> Estudantes; 
     public List<Professor> Professores; 
-    public List<Professor> restricaoProfessor;
-    public List<Disciplina> restricaoDisciplina;
     
+    public short qtdTimeSlots;
+    public short qtdPeriodos;    
     
     public LeitorDados(){
         
         TimeSlots = new ArrayList<>();
         Cursos = new ArrayList<>();
         TiposDeSala = new ArrayList<>();
-        Salas = new ArrayList<>();
+        Salas = new ArrayList<>();       
         Disciplinas = new ArrayList<>();
+        DisciplinasComRestricao = new ArrayList<>();
+        DisciplinasSemRestricao = new ArrayList<>();
         Estudantes = new ArrayList<>();
         Professores = new ArrayList<>();
     }
     
-    public void Executa(String path) throws FileNotFoundException, IOException { 
-        
-        List<String> lines = new ArrayList<>();
-        
-        InputStream is = new FileInputStream(path);
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
-        String line = br.readLine();
+    public void Executa(String info, String restr) throws FileNotFoundException, IOException {        
 
-        while (line != null) {
-            
-            if(line.startsWith("//")){
-                
-                line = br.readLine();
-                continue;
-            }                     
-            
-            lines.add(line.replace(".", ",")); 
-            
-            line = br.readLine();
+        LeInformacoes(info);
+        LeRestricoes(restr);   
+        
+        for(Disciplina d: Disciplinas){
+            if(d.timesSlotsPossiveis.size() > 0)
+                DisciplinasComRestricao.add(d);
+            else
+                DisciplinasSemRestricao.add(d);               
         }
         
-        br.close();    
-        
-        String separator = "";
-        
-        for(int i = 0; i < lines.size(); i++){  
-            
-            line = lines.get(i);   
-            
-            if(isSeparator(line)){
-                separator  = line;
-                continue;
-            }            
-            AddObject(line, separator);                
-        }
+        qtdTimeSlots = (short)TimeSlots.size();
+        qtdPeriodos = somaPeriodos();
         
         System.out.println("concluído!");
     }         
@@ -85,7 +67,7 @@ public class LeitorDados {
             line.equals("PROFESSOR");
     }
 
-    private void AddObject(String line, String separator) {
+    private void AddObject(String line, String separator, boolean restr) {
         
         switch (separator) {
             case "TIMESLOT":
@@ -100,13 +82,21 @@ public class LeitorDados {
             case "SALA":
                 AddSala(line);
                 break;
-            case "DISCIPLINA":                   
+            case "DISCIPLINA": 
+                if(restr){
+                    AddRestricao(line, separator);
+                    break;
+                }                
                 AddDisciplina(line);
                 break;
             case "ESTUDANTE":
                 AddEstudante(line);
                 break;
             case "PROFESSOR":
+                if(restr){
+                    AddRestricao(line, separator);
+                     break;
+                }    
                 AddProfessor(line);
                 break;
         }
@@ -173,9 +163,17 @@ public class LeitorDados {
         int cargaHorariaTeoria = Integer.parseInt(timeSlotLine[4].replaceAll(" ", ""));
         int tipoSalaTeoria = Integer.parseInt(timeSlotLine[5].replaceAll(" ", ""));
         int cargaHorariaPratica = Integer.parseInt(timeSlotLine[6].replaceAll(" ", ""));
-        int tipoSalaPratica = Integer.parseInt(timeSlotLine[7].replaceAll(" ", ""));    
+        int tipoSalaPratica = Integer.parseInt(timeSlotLine[7].replaceAll(" ", ""));  
+        Curso curso = null;
         
-        Disciplina disciplina = new Disciplina(codigo, codigoCurso, codigoPeriodo, descricao, 
+        for(Curso c: Cursos){
+            if(c.codigo == codigoCurso){
+                curso = c;        
+                break;                
+            }                        
+        }
+        
+        Disciplina disciplina = new Disciplina(codigo, curso, codigoPeriodo, descricao, 
                                                cargaHorariaTeoria, tipoSalaTeoria, 
                                                cargaHorariaPratica, tipoSalaPratica);
         
@@ -215,6 +213,7 @@ public class LeitorDados {
         int codigo = Integer.parseInt(timeSlotLine[0].replaceAll(" ", ""));
         String nome = timeSlotLine[1];
         List<Disciplina> disciplinasAMinistrar = new ArrayList<>();
+        Professor professor = new Professor();
         
         for(int i = 2; i < timeSlotLine.length; i++){
             if(timeSlotLine[i].replaceAll(" ", "").equals(""))
@@ -222,11 +221,13 @@ public class LeitorDados {
              int codigoDisciplina = Integer.parseInt(timeSlotLine[i].replaceAll(" ", ""));
             
             for(Disciplina d : Disciplinas)
-                if(d.codigo == codigoDisciplina)    
+                if(d.codigo == codigoDisciplina){ 
                     disciplinasAMinistrar.add(d);
+                    d.ProfessoresPodem.add(professor);
+                }
         }   
         
-        Professor professor = new Professor(codigo, nome, disciplinasAMinistrar);
+        professor.SetDados(codigo, nome, disciplinasAMinistrar);
         Professores.add(professor);
     }
     
@@ -240,6 +241,152 @@ public class LeitorDados {
         }  
         
         return quantidade;
+    }    
+    
+    private void LeInformacoes(String info) throws FileNotFoundException, IOException {
+        List<String> lines = new ArrayList<>();
+        
+        InputStream is = new FileInputStream(info);
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+        String line = br.readLine();
+        
+         while (line != null) {
+            
+            if(line.startsWith("//")){
+                
+                line = br.readLine();
+                continue;
+            }                     
+            
+            lines.add(line.replace(".", ",")); 
+            
+            line = br.readLine();
+        }
+        
+        br.close();    
+        
+        String separator = "";
+        
+        for(int i = 0; i < lines.size(); i++){  
+            
+            line = lines.get(i); 
+            
+            if(line == "")
+                continue;
+            
+            if(isSeparator(line)){
+                separator  = line;
+                continue;
+            }            
+            AddObject(line, separator, false);                
+        }         
+    }
+
+    private void LeRestricoes(String restr) throws FileNotFoundException, IOException {
+         List<String> lines = new ArrayList<>();
+        
+        InputStream is = new FileInputStream(restr);
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+        String line = br.readLine();
+        
+         while (line != null) {
+             
+            if(line.startsWith("//")){
+                
+                line = br.readLine();
+                continue;
+            }                     
+            
+            lines.add(line.replace(".", ",")); 
+            
+            line = br.readLine();
+        }
+        
+        br.close();    
+        
+        String separator = "";
+        
+        for(int i = 0; i < lines.size(); i++){  
+            
+            line = lines.get(i);   
+            
+            if(line.length() < 1)
+                continue;
+            
+            if(isSeparator(line)){
+                separator  = line;
+                continue;
+            }   
+            AddObject(line, separator, true);
+        }         
+    }   
+
+    private void AddRestricao(String line, String separator) {        
+        switch(separator){        
+            case "DISCIPLINA":
+                AddRestricaoDisciplina(line);
+                break;
+                        
+            case "PROFESSOR":    
+                AddRestricaoProfessor(line);
+                break;               
+        }
+    }
+
+    private void AddRestricaoDisciplina(String line) {
+        String[] restricaoDisciplina = line.split(",");
+        int codigo = Integer.parseInt(restricaoDisciplina[0].replaceAll(" ", ""));
+        Disciplina disciplina = null;
+        int timeSlote = 0;
+        
+        for(Disciplina d : Disciplinas){
+           if(d.codigo == codigo) {
+               disciplina = d; 
+               break;
+           }         
+        }
+        
+        if(disciplina == null)
+            return;        
+        
+        for(int i = 1; i < restricaoDisciplina.length; i++){
+            timeSlote = Integer.parseInt(restricaoDisciplina[i].replaceAll(" ", ""));
+            for(int j = 0; j < TimeSlots.size(); j++){
+                if(TimeSlots.get(j).codigo == timeSlote){
+                    disciplina.timesSlotsPossiveis.add(TimeSlots.get(j));                    
+                }                    
+            }
+        }            
+    }
+
+    private void AddRestricaoProfessor(String line) {
+        String[] restricaoProfessor = line.split(",");
+        int codigo = Integer.parseInt(restricaoProfessor[0].replaceAll(" ", ""));
+        Professor professor = null;
+        int timeSlot = 0;
+        
+        for(Professor p : Professores){
+           if(p.codigo == codigo) {
+               professor = p; 
+               break;
+           }         
+        }
+        
+        if(professor == null)
+            return;     
+        
+        
+        for(int i = 1; i < restricaoProfessor.length; i++){
+            timeSlot = Integer.parseInt(restricaoProfessor[i].replaceAll(" ", ""));
+            for(int j = 0; j < TimeSlots.size(); j++){
+                if(TimeSlots.get(j).codigo == timeSlot){
+                    professor.timeSlotsImpossiveis.add(TimeSlots.get(j));  
+                    break;
+                }                    
+            }
+        }
     }
 }
 

@@ -11,6 +11,7 @@ package package1;
  * @author GMTH
  */
 import java.util.List;
+import java.util.Objects;
 public class Gene {
     
     private Professor professor;
@@ -43,10 +44,14 @@ public class Gene {
      * @param timeSlot
      * @param disciplina 
      */
-    public Gene(Professor professor, List<TimeSlot> timeSlot, Disciplina disciplina){
+    public Gene(Professor professor, List<TimeSlot> timeSlots, Disciplina disciplina){
         this.professor = professor;
         this.disciplina = disciplina;
         this.timeSlots = timeSlots;
+    }
+    
+    public Gene(Disciplina disciplina){
+        this.disciplina = disciplina;
     }
     
     public int getQtdEstudantes(){
@@ -118,6 +123,12 @@ public class Gene {
     
     public void setDisciplina(Disciplina disciplina){
         this.disciplina = disciplina;
+    }
+    
+    public String toString(){
+        return "disciplina: "+(Objects.isNull(this.disciplina)? "null" : this.getDisciplina().codigo)+
+                "\ntimeSlots: "+(Objects.isNull(this.getTimeSlots())? "null" : timeSlots.toString())+
+                "\nperiodo: "+(Objects.isNull(this.disciplina)?"null" : this.getDisciplina().codigoPeriodo);
     }
     
 }

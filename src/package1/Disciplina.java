@@ -1,9 +1,10 @@
 package package1;
+import java.util.ArrayList;
 import java.util.List;
 public class Disciplina {
     
     public int codigo;
-    public int codigoCurso;
+    public Curso curso;
     public int codigoPeriodo;
     public String descricao;
     public int cargaHorariaTeoria;
@@ -12,16 +13,20 @@ public class Disciplina {
     public int tipoSalaPratica;    
     public int codigoTurno;
     
-    List<TimeSlot>timesSlotsPossiveis;
+    List<TimeSlot> timesSlotsPossiveis;
     List<Professor> ProfessoresPodem;
-    public Disciplina(int codigo, int codigoCurso, int codigoPeriodo, String descricao, int cargaHorariaTeoria, int tipoSalaTeoria, int cargaHorariaPratica, int tipoSalaPratica) {
+    
+    public Disciplina(int codigo, Curso curso, int codigoPeriodo, String descricao, int cargaHorariaTeoria, int tipoSalaTeoria, int cargaHorariaPratica, int tipoSalaPratica) {
         this.codigo = codigo;
-        this.codigoCurso = codigoCurso;
+        this.curso = curso;
         this.codigoPeriodo = codigoPeriodo;
         this.descricao = descricao;
         this.cargaHorariaTeoria = cargaHorariaTeoria;
         this.tipoSalaTeoria = tipoSalaTeoria;
         this.cargaHorariaPratica = cargaHorariaPratica;
         this.tipoSalaPratica = tipoSalaPratica;
+        
+        this.timesSlotsPossiveis = new ArrayList<>();        
+        this.ProfessoresPodem = new ArrayList<>();
     }
 }
