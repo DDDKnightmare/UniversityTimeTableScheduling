@@ -642,6 +642,74 @@ public class Individuo {
     }
     
     
-    
+   public int funcaoFitness (Individuo individuo) {
+       int nota = 9500;
+       
+       int pesoLacunasVazias  = 1;
+       int pesoAlunosNaoMatriculados = 1;
+       int pesoProfessorOscioso = 1;
+       int pesoMateriaNaoAlocada = 1; 
+       
+       int lacunasVazias = verificaLacunasVazias(individuo);
+       int alunosNaoMatriculados = verificaAlunosNaoMatriculados();
+       int professoresOsciosos = verificaProfessoresOsciosos(ld.Professores);
+       int materiasNaoAlocadas = verificaMateriasNaoAlocadas(ld.Estudantes);
+       
+       nota = nota - pesoLacunasVazias*lacunasVazias - pesoAlunosNaoMatriculados*alunosNaoMatriculados 
+               - pesoProfessorOscioso*professoresOsciosos - pesoMateriaNaoAlocada*materiasNaoAlocadas ; 
+ 
+       
+       return nota;
+   
+   }
+
+    private int verificaLacunasVazias(Individuo individuo ) {
+        int lacunas = 0;
+        
+        for (int i = 0; i < individuo.qtdPeriodos; i++){
+            for(int j = 0; j < individuo.qtdTimeSlots; j++){
+                if(individuo.horario[j][i] == null){
+                    lacunas++;
+                
+                }
+            }
+        }
+        
+        return lacunas;
+        }
+
+    private int verificaAlunosNaoMatriculados(List<Estudante> estudantes) {
+        int alunos = 0;
+        int disciplinas = 0;
+        
+        for(Estudante p : estudantes){
+            for(Disciplina d : p.disciplinasACursar ){
+                if(!p.disciplinasCursadas.contains(d))
+                  disciplinas++;  
+            }
+            if(disciplinas == p.disciplinasACursar.size()){
+                alunos++;
+                disciplinas = 0;
+        }
+        
+        
+        return alunos;
+       }
+
+    private int verificaProfessoresOsciosos(List<Professor> professores) {
+        int qtdProfessores = 0;
+            
+        for(Professor p : professores){
+            if(p.TimeSlotsAlocados.isEmpty()){
+                qtdProfessores++;
+            }
+        }
+        return qtdProfessores;
+       }
+
+    private int verificaMateriasNaoAlocadas() {
+        int materias = 0;
+        return materias;
+       }
     
 }
