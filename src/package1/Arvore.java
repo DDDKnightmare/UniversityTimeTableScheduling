@@ -45,7 +45,7 @@ public class Arvore {
                 }
                 aux = aux.getRight();
             }else{
-                switch(Individuo.rng.nextInt(3)){
+                switch(Individuo.rng.nextInt(2)){
                     case 0: // left
                         if(Objects.isNull(aux.getLeft())){
                             aux.setLeft(new No(individuo));
@@ -63,25 +63,9 @@ public class Arvore {
                         aux.setLeft(aux.getLeft().getPai());
                         aux.getLeft().lSon = true;
                         break;
+                    
                         
-                    case 1: // middle
-                        No pai = aux.getPai();
-                        if(aux.lSon){
-                            aux.lSon = false;
-                            aux.setPai(new No(individuo));
-                            aux.getPai().setPai(pai);
-                            pai.setLeft(aux.getPai());
-                            aux.getPai().setRight(aux);
-                            break While;
-                        }
-                        aux.lSon = true;
-                        aux.setPai(new No(individuo));
-                        aux.getPai().setPai(pai);
-                        pai.setRight(aux.getPai());
-                        aux.getPai().setLeft(aux);
-                        break While;
-                        
-                    case 2: // right
+                    case 1: // right
                         if(Objects.isNull(aux.getRight())){
                             aux.setRight(new No(individuo));
                             aux.getRight().setPai(aux);
