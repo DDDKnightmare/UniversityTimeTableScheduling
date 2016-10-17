@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Individuo {
     
     private final LeitorDados ld;// Dados lidos dos arquivos
-    private short nota;
+    private int nota;
     private List<Gene> GenesNaoAlocados;
 // RNG
     public static final Random rng = new Random(); // gerador de números aleatórios
@@ -27,11 +27,11 @@ public class Individuo {
     
     public Individuo(LeitorDados ld){        
         this.ld = ld;
-        this.nota = 20000;
+        
         this.GenesNaoAlocados = new ArrayList<>();    
         disciplinasSemRestricaoPSortear = new ArrayList<>(ld.DisciplinasSemRestricao);
         disciplinasComRestricaoPSortear = new ArrayList<>(ld.DisciplinasComRestricao);
-        horario = new Gene[ld.qtdTimeSlots][ld.qtdPeriodos];
+        horario = new Gene[ld.qtdPeriodos][ld.qtdTimeSlots];
         geraIndividuo(ld);  
     }
     
@@ -61,6 +61,7 @@ public class Individuo {
             
         }while(qtd >0);       
        
+       this.funcaoFitness(this);
     }
     
     
@@ -93,6 +94,16 @@ public class Individuo {
     }
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * Verifica se determinado timeSlot já está ocupado com outra disciplina do mesmo período.
      * @param cursoPeriodo
@@ -100,9 +111,9 @@ public class Individuo {
      * @return 
      */
     public boolean verificaDisponibilidade(Disciplina disciplina, TimeSlot timeSlot){
-        if(Objects.isNull(horario[timeSlot.codigo-1][this.mapaCursoPeriodo(disciplina)])
+        if(Objects.isNull(horario[this.mapaCursoPeriodo(disciplina)][timeSlot.codigo-1])
             ||
-          horario[timeSlot.codigo-1][this.mapaCursoPeriodo(disciplina)].getDisciplina() != disciplina)
+          horario[this.mapaCursoPeriodo(disciplina)][timeSlot.codigo-1].getDisciplina() != disciplina)
             return true;
         return false;        
     }
@@ -120,7 +131,7 @@ public class Individuo {
             return false;
         }
         for(short i = 0; i<ld.qtdPeriodos; i++){
-            Gene gene = horario[timeSlot.codigo-1][i];
+            Gene gene = horario[i][timeSlot.codigo-1];
             if(Objects.isNull(gene))
                 continue;
             if(gene.getProfessor() == professor){
@@ -138,7 +149,7 @@ public class Individuo {
     
     
     
-    public short getNota(){
+    public int getNota(){
         return this.nota;
     }
 
@@ -516,9 +527,9 @@ public class Individuo {
                 outraSala: // Label for the timeSlots loop
                 for(int j = 0; j< timeSlots.size();j++){
                     for(int k = 0; k < ld.qtdPeriodos; k++){
-                        if(!Objects.isNull(horario[timeSlots.get(j).codigo -1][k]) 
-                            && !Objects.isNull(horario[timeSlots.get(j).codigo -1][k].getSala()) 
-                            && horario[timeSlots.get(j).codigo-1][k].getSala()== aux){
+                        if(!Objects.isNull(horario[k][timeSlots.get(j).codigo -1]) 
+                            && !Objects.isNull(horario[k][timeSlots.get(j).codigo -1].getSala()) 
+                            && horario[k][timeSlots.get(j).codigo-1].getSala()== aux){
                             
                             salas.remove(i);
                             i--;
@@ -544,7 +555,7 @@ public class Individuo {
         
         for(int i = 0; i < timeSlots.size(); i++){
             for(int j =0; j < ld.qtdPeriodos; j++){
-                if(!Objects.isNull(horario[i][j]) && horario[i][j].getEstudantes().contains(estudante)){
+                if(!Objects.isNull(horario[j][i]) && horario[j][i].getEstudantes().contains(estudante)){
                     return false;
                 }
             }
@@ -643,7 +654,7 @@ public class Individuo {
         int l = timeSlots.size();
         
         for(int i =0;i<l;i++){
-            horario[timeSlots.get(i).codigo -1][this.mapaCursoPeriodo(gene.getDisciplina())] = gene;
+            horario[this.mapaCursoPeriodo(gene.getDisciplina())][timeSlots.get(i).codigo -1] = gene;
         }
     }
     /**
@@ -653,10 +664,118 @@ public class Individuo {
      * @param codigoPeriodo
      */
     public void alocar(Gene gene, int timeSlot, int codigoPeriodo){
-        horario[timeSlot][codigoPeriodo] = gene;
+        horario[codigoPeriodo][timeSlot] = gene;
     }
     
-    
+    public int funcaoFitness (Individuo individuo) {
+       int nota = 9500;
+       
+       int pesoLacunasVazias  = 1;
+       int pesoAlunosNaoMatriculados = 1;
+       int pesoAlunosParcialmenteMatriculados = 1;
+       int pesoDisciplinasParcialmenteAlocadas = 1;
+       int pesoProfessorOscioso = 1;
+       int pesoMateriaNaoAlocada = 1; 
+       int lacunasVazias = 0;
+        for(int i = 0; i<ld.qtdPeriodos;i++){
+           lacunasVazias += verificaLacunasVazias(individuo.horario[i]);
+        }
+       int[] alunosNaoMatriculados = verificaAlunosNaoMatriculados(ld.Estudantes);
+       int professoresOsciosos = verificaProfessoresOciosos(ld.Professores);
+       int materiasNaoAlocadas = verificaMateriasNaoAlocadas();
+       
+       nota = nota - pesoLacunasVazias*lacunasVazias - pesoAlunosNaoMatriculados*alunosNaoMatriculados[0]
+               - pesoAlunosParcialmenteMatriculados*alunosNaoMatriculados[1] - pesoDisciplinasParcialmenteAlocadas* alunosNaoMatriculados[2]
+               - pesoProfessorOscioso*professoresOsciosos - pesoMateriaNaoAlocada*materiasNaoAlocadas; 
+ 
+       
+       return nota;
+   
+   }
+
+    private int verificaLacunasVazias(Gene[] coluna ) {
+        if(Objects.isNull(coluna)){
+            return ld.qtdTimeSlots;
+        }
+        int lacunas = 0;
+                
+            for(int j = 0; j < ld.qtdTimeSlots; j++){
+                if(Objects.isNull(coluna[j])){
+                    lacunas++;
+                }
+            }
+        
+        
+        return lacunas;
+        }
+
+    private int[] verificaAlunosNaoMatriculados(List<Estudante> estudantes) {
+        int alunos = 0; // não matriculado em nenhuma disciplina
+        int disciplinas = 0; // não matriculado em algumas disciplinas
+        int parcial = 0; //  disciplinas com carga horaria incompleta
+        int aulas = 0;
+        int horasAula = 0;
+        for(Estudante p : estudantes){
+            for(Disciplina d : p.disciplinasACursar ){
+                horasAula = d.cargaHorariaPratica + d.cargaHorariaTeoria;
+                for(int i = 0; i< ld.qtdTimeSlots;i++){
+                Gene aux = horario[this.mapaCursoPeriodo(d)][i];
+                    if(!Objects.isNull(aux) && aux.getDisciplina() == d){
+                        aulas++;
+                        if(!aux.getEstudantes().contains(p)){
+                            disciplinas++;
+                        }
+                        
+                        if(aulas == horasAula){
+                            break;
+                        }
+                    }
+                    
+                }
+                if(aulas < horasAula){
+                    if(aulas == 0){
+                        parcial++;
+                    }
+                }
+                
+            }
+            if(disciplinas == p.disciplinasACursar.size()){
+                alunos++;
+                disciplinas = 0;
+            }
+        }
+        
+        int[] retorno = {alunos,disciplinas,parcial};
+        return retorno;
+       }
+
+    private int verificaProfessoresOciosos(List<Professor> professores) {
+        int qtdProfessores = 0;
+        int count = 0;
+        for(Professor p : professores){
+            int aulas = p.disciplinasAMinistrar.size();
+            outroProfessor:
+                for(Disciplina d : p.disciplinasAMinistrar){
+                    for(int i = 0; i< ld.qtdTimeSlots;i++){
+                        if(!Objects.isNull(horario[this.mapaCursoPeriodo(d)][i]) && horario[this.mapaCursoPeriodo(d)][i].getProfessor() == p){
+                            break outroProfessor;
+                        }
+                    }
+                    count++;
+                }
+            if(count == p.disciplinasAMinistrar.size()){
+                qtdProfessores++;
+            }
+            count = 0;
+            
+            
+        }
+        return qtdProfessores;
+       }
+
+    private int verificaMateriasNaoAlocadas(){
+        return this.GenesNaoAlocados.size();
+       }
     
     
 }

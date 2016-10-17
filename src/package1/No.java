@@ -11,7 +11,7 @@ package package1;
  * @author GMTH
  */
 public class No {
-    private short nota;
+    private int nota;
     private Individuo individuo;
     private No pai = null;
     private No left = null;
@@ -52,7 +52,7 @@ public class No {
         nota = individuo.getNota();
     }
     
-    public short getNota(){
+    public int getNota(){
         return individuo.getNota();
     }
     

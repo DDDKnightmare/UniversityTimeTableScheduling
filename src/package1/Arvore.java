@@ -21,6 +21,10 @@ public class Arvore {
         return raiz;
     }
     
+    public static void imprimeNotas(){
+        imprimeNotas(raiz);
+    }
+    
     public static void imprimeNotas(No aux){
         if(Objects.isNull(aux)) return;
         
@@ -112,7 +116,7 @@ public class Arvore {
     }
     
     public static void removeIndividuo(Individuo individuo){
-        short aux = individuo.getNota();
+        int aux = individuo.getNota();
         No guide = raiz;
         while(true){
             
