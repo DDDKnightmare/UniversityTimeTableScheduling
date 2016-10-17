@@ -17,6 +17,19 @@ public class Arvore {
     
     private static No raiz = null;
     
+    public static No getRaiz(){
+        return raiz;
+    }
+    
+    public static void imprimeNotas(No aux){
+        if(Objects.isNull(aux)) return;
+        
+        imprimeNotas(aux.getLeft());
+        
+        System.out.println(aux.getNota());
+        
+        imprimeNotas(aux.getRight());
+    }
     
     public static void addNo(Individuo individuo){
         No aux = raiz;
@@ -73,7 +86,7 @@ public class Arvore {
                         }
                         if(aux.getNota() == aux.getRight().getNota()){
                             aux = aux.getRight();
-                            break While;
+                            break;
                         }
                         aux.getRight().setPai(new No(individuo));
                         aux.getRight().getPai().setPai(aux);

@@ -35,6 +35,8 @@ public class LeitorDadosEntrada {
         System.out.println("Fim do indivíduo "+(i+1)+System.getProperty("line.separator"));
       }
       
+      Arvore.imprimeNotas(Arvore.getRaiz());
+      
     }
     
 }
