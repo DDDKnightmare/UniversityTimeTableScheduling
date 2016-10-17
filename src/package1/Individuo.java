@@ -92,7 +92,6 @@ public class Individuo {
         
     }
     
-//    1552017979
     
     /**
      * Verifica se determinado timeSlot já está ocupado com outra disciplina do mesmo período.
