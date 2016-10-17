@@ -61,7 +61,7 @@ public class Individuo {
             
         }while(qtd >0);       
        
-       this.funcaoFitness(this);
+       this.nota = this.funcaoFitness(this);
     }
     
     
