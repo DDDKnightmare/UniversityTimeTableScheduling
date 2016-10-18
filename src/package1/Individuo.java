@@ -97,13 +97,7 @@ public class Individuo {
         
     }
     
-    
-    private void achaHorarioAlternativo(Gene gene){
-        if(!Objects.isNull(gene.getTimeSlots())){
-            
-        }
-        
-    }
+   
     
     
     /**
