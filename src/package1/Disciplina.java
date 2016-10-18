@@ -12,6 +12,7 @@ public class Disciplina {
     public int cargaHorariaPratica;
     public int tipoSalaPratica;    
     public int codigoTurno;
+    public List<Estudante> estudantesAMatricular;
     
     List<TimeSlot> timesSlotsPossiveis;
     List<Professor> ProfessoresPodem;
@@ -28,5 +29,6 @@ public class Disciplina {
         
         this.timesSlotsPossiveis = new ArrayList<>();        
         this.ProfessoresPodem = new ArrayList<>();
+        this.estudantesAMatricular = new ArrayList<>();
     }
 }

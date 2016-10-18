@@ -21,6 +21,7 @@ public class Gene {
     private List<TimeSlot> timeSlots; 
     private boolean aulaTeorica;
     private int qtdEstudantes;
+    private boolean teorica;
 //    public Gene(Professor professor, Sala sala, Disciplina disciplina, List<Short> estudantes){
 //        this.professor = professor;
 //        this.sala = sala;
@@ -50,8 +51,23 @@ public class Gene {
         this.timeSlots = timeSlots;
     }
     
+    public Gene(Professor professor, List<TimeSlot> timeSlots, Disciplina disciplina,Sala sala){
+        this.professor = professor;
+        this.disciplina = disciplina;
+        this.timeSlots = timeSlots;
+        this.sala = sala;
+    }
+    
     public Gene(Disciplina disciplina){
         this.disciplina = disciplina;
+    }
+    
+    public boolean getTeorica(){
+        return teorica;
+    }
+    
+    public void setTeorica(boolean teorica){
+        this.teorica = teorica;
     }
     
     public int getQtdEstudantes(){

@@ -8,12 +8,12 @@ public class Estudante {
     public int codigo;
     public String nome;
     public List<Disciplina> disciplinasACursar;
-    public List<Disciplina> disciplinasCursando;
+    
 
     public Estudante(int codigo, String nome, List<Disciplina> disciplinasACursar) {
         this.codigo = codigo;
         this.nome = nome;
         this.disciplinasACursar = disciplinasACursar;
-        this.disciplinasCursando = new ArrayList<>();
+        
     }
 }

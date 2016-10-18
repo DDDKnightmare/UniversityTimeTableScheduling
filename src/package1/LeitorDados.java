@@ -182,24 +182,27 @@ public class LeitorDados {
     
     private void AddEstudante(String line) {
         try{
-        String[] timeSlotLine = line.split(",");   
-        
-        int codigo = Integer.parseInt(timeSlotLine[0].replaceAll(" ", ""));        
-        String nome = timeSlotLine[1];        
-        List<Disciplina> disciplinasACursar = new ArrayList<>();
-        
-        for(int i = 2; i < timeSlotLine.length; i++){
-            if(timeSlotLine[i].replaceAll(" ", "").equals(""))
-                continue;            
-            int codigoDisciplina = Integer.parseInt(timeSlotLine[i].replaceAll(" ", ""));
-            
-            for(Disciplina d : Disciplinas)
-                if(d.codigo == codigoDisciplina)    
-                    disciplinasACursar.add(d);
-        }   
-        
-        Estudante estudante = new Estudante(codigo, nome, disciplinasACursar);
-        Estudantes.add(estudante);
+            String[] timeSlotLine = line.split(",");   
+
+            int codigo = Integer.parseInt(timeSlotLine[0].replaceAll(" ", ""));        
+            String nome = timeSlotLine[1];        
+            List<Disciplina> disciplinasACursar = new ArrayList<>();
+
+            for(int i = 2; i < timeSlotLine.length; i++){
+                if(timeSlotLine[i].replaceAll(" ", "").equals(""))
+                    continue;            
+                int codigoDisciplina = Integer.parseInt(timeSlotLine[i].replaceAll(" ", ""));
+
+                for(Disciplina d : Disciplinas)
+                    if(d.codigo == codigoDisciplina)    
+                        disciplinasACursar.add(d);
+            }   
+
+            Estudante estudante = new Estudante(codigo, nome, disciplinasACursar);
+            Estudantes.add(estudante);
+            for(Disciplina d : estudante.disciplinasACursar){
+                d.estudantesAMatricular.add(estudante);
+            }
         }
         catch(Exception e){
             System.out.println(e.toString());
