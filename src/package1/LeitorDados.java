@@ -342,7 +342,7 @@ public class LeitorDados {
         String[] restricaoDisciplina = line.split(",");
         int codigo = Integer.parseInt(restricaoDisciplina[0].replaceAll(" ", ""));
         Disciplina disciplina = null;
-        int timeSlote = 0;
+        int timeSlot = 0;
         
         for(Disciplina d : Disciplinas){
            if(d.codigo == codigo) {
@@ -355,9 +355,9 @@ public class LeitorDados {
             return;        
         
         for(int i = 1; i < restricaoDisciplina.length; i++){
-            timeSlote = Integer.parseInt(restricaoDisciplina[i].replaceAll(" ", ""));
+            timeSlot = Integer.parseInt(restricaoDisciplina[i].replaceAll(" ", ""));
             for(int j = 0; j < TimeSlots.size(); j++){
-                if(TimeSlots.get(j).codigo == timeSlote){
+                if(TimeSlots.get(j).codigo == timeSlot){
                     disciplina.timesSlotsPossiveis.add(TimeSlots.get(j));                    
                 }                    
             }

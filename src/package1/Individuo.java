@@ -114,17 +114,22 @@ public class Individuo {
         List<Gene> novosGenes;
         if(!Objects.isNull(gene.getTimeSlots())){ // já foi separado em gene para aulas teóricas e para aulas práticas
                 List<Professor> aux = new ArrayList<>(gene.getDisciplina().ProfessoresPodem);
-                novosGenes = new ArrayList<>(this.RetornaNovosGenesParaCompletarCargaHoraria(gene));
+                
+                novosGenes = (this.RetornaNovosGenesParaCompletarCargaHoraria(gene));
                 
         }
         else{ // gene não foi separado em aulas teóricas e práticas
             Gene pratica = new Gene(gene);
             pratica.setTeorica(false);
             gene.setTeorica(true);
-                        
-            novosGenes = new ArrayList<>(this.RetornaNovosGenesParaCompletarCargaHoraria(gene));
-            novosGenes.addAll(this.RetornaNovosGenesParaCompletarCargaHoraria(pratica));
-             
+            int[] aux;
+            do{
+                novosGenes = new ArrayList<>(this.RetornaNovosGenesParaCompletarCargaHoraria(gene));
+                novosGenes.addAll(this.RetornaNovosGenesParaCompletarCargaHoraria(pratica));
+                aux = this.VerificaConflitoTimeSlot(novosGenes);
+            }
+            while(aux[0] != 0 && aux[1] != 0);
+            
         }
         
         if(this.VerificaElementosDaLista(novosGenes)){
@@ -153,6 +158,40 @@ public class Individuo {
         }
         
     }
+    
+    private int[] VerificaConflitoTimeSlot(List<Gene> genes){
+        int count = 0;
+        int[] retorno = {0,0};// {teórica,prática}
+        for(Gene g : genes){
+            count = 0;
+            for(Gene h : genes){
+                if(g.getTimeSlots() == h.getTimeSlots()){
+                    count ++;
+                }
+
+                if(count > 1){
+                    if(rng.nextBoolean()){
+                        retorno[g.getTeorica()?0:1] ++;
+                        genes.remove(g);
+                    }else{
+                        retorno[h.getTeorica()?0:1] ++;
+                        genes.remove(h);
+                    }
+                    count --;
+                }
+            }
+        }
+        
+        return retorno;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
    /**
     * Método que recebe como parametro uma lista, e varre a lista, removendo elementos nulos.
     * 
@@ -164,14 +203,15 @@ public class Individuo {
         if(Objects.isNull(lista)){
             return false;
         }
+        if(lista.isEmpty()){
+            return false;
+        }
         for(T t : lista){
             if(Objects.isNull(t)){
                 lista.remove(t);
             }
         }
-        if(lista.isEmpty()){
-            return false;
-        }
+        
         
         return true;
         
@@ -192,6 +232,8 @@ public class Individuo {
         
         int numTimeSlots;
         
+        
+        
         boolean teorica = gene.getTeorica();
         
         if(!Objects.isNull(gene.getTimeSlots())){
@@ -210,12 +252,19 @@ public class Individuo {
         
         List<TimeSlot> aux = new ArrayList<>();
         
+        int tipoSala = teorica? gene.getDisciplina().tipoSalaTeoria : gene.getDisciplina().tipoSalaPratica;
+        
+        List<Professor> professores = gene.getDisciplina().ProfessoresPodem;
+        List<Sala> salas = this.SalasPossiveis(timeSlots, tipoSala);
+        
+        if(Objects.isNull(salas) || salas.isEmpty()){
+            return null;
+        }
+        
         professores:
-        for(Professor p: gene.getDisciplina().ProfessoresPodem){
+        for(Professor p: professores){
             
-            for(Sala sala : this.SalasPossiveis(timeSlots, 
-                                                teorica? gene.getDisciplina().tipoSalaTeoria 
-                                                        : gene.getDisciplina().tipoSalaPratica)){
+            for(Sala sala : salas){
                 
                 
                 for(TimeSlot t : timeSlots){
@@ -635,7 +684,9 @@ public class Individuo {
      * @return Gene da aula pratica || null(se houver apenas aulas práticas ou apenas aulas teóricas)
      */
     private Gene DefinirSala(Gene gene){
+        
         List<TimeSlot> timeSlotsTeorica = gene.getTimeSlots();
+        
         List<TimeSlot> timeSlotsPratica = new ArrayList<>();
         TimeSlot timeSlot;
         
@@ -695,7 +746,7 @@ public class Individuo {
         }else{ // NÃO tem aulas TEÓRICAS
             gene.setTimeSlots(timeSlotsPratica);// setando os timeSlots das aulas práticas 
             
-            if(salas.size() > 0){ 
+            if(!Objects.isNull(salas) && salas.size() > 0){ 
                 gene.setSala(salas.get(rng.nextInt(salas.size())));
             }else{
                 this.GenesNaoAlocados.add(gene);
@@ -771,6 +822,9 @@ public class Individuo {
      * @return List<Sala>
      */
     private List<Sala> SalasPossiveis(final List<TimeSlot> timeSlots, final int tipoSala){
+        if(tipoSala == 0){
+            return null;
+        }
         List<Sala> salas = new ArrayList<>(ld.Salas);
         Sala aux;
         /**
