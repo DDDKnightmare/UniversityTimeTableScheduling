@@ -10,6 +10,7 @@ package package1;
  *
  * @author GMTH
  */
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 public class Gene {
@@ -49,6 +50,8 @@ public class Gene {
         this.professor = professor;
         this.disciplina = disciplina;
         this.timeSlots = timeSlots;
+        this.estudantes = new ArrayList<>();
+        
     }
     
     public Gene(Professor professor, List<TimeSlot> timeSlots, Disciplina disciplina,Sala sala){
@@ -56,10 +59,13 @@ public class Gene {
         this.disciplina = disciplina;
         this.timeSlots = timeSlots;
         this.sala = sala;
+        this.estudantes = new ArrayList<>();
     }
     
     public Gene(Disciplina disciplina){
         this.disciplina = disciplina;
+        this.estudantes = new ArrayList<>();
+        this.timeSlots = new ArrayList<>();
     }
     
     public boolean getTeorica(){
