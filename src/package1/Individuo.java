@@ -567,11 +567,11 @@ public class Individuo {
                 }
             }
             if(numAulas == 0){
-                break timeSlots;
+                break;
             }
         }
         for(TimeSlot t : timeSlots){
-            horario[this.mapaCursoPeriodo(disciplina)][t.codigo].addEstudante(estudante);
+            horario[this.mapaCursoPeriodo(disciplina)][t.codigo - 1].addEstudante(estudante);
         }
         return true;
         
@@ -615,9 +615,9 @@ public class Individuo {
      */
     private boolean VerificaDisponibilidadeSala(TimeSlot timeSlot, Sala sala){
         for(int i = 0; i< ld.qtdPeriodos; i++){
-            if(!Objects.isNull(horario[i][timeSlot.codigo])
+            if(!Objects.isNull(horario[i][timeSlot.codigo - 1])
                &&
-               horario[i][timeSlot.codigo].getSala() == sala){
+               horario[i][timeSlot.codigo - 1].getSala() == sala){
                 return false;
             }
         }
