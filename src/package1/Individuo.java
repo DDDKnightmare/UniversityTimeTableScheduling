@@ -41,7 +41,7 @@ public class Individuo {
      */
     private void geraIndividuo(LeitorDados ld){
         
-        int qtd = 0;
+        int qtd;
         
         do{// Definindo professores e timeSlots para as disciplinas com restrição.
             Disciplina disciplina = disciplinasComRestricaoPSortear.get(rng.nextInt(disciplinasComRestricaoPSortear.size()));
@@ -51,7 +51,7 @@ public class Individuo {
             CriaGeneDisciplina(disciplina,true);//Definindo e alocando os genes
             
         }while(qtd >0); 
-        qtd = 0;
+        
        do{// Definindo professores e timeSlots para as disciplinas sem restrição.
             Disciplina disciplina = disciplinasSemRestricaoPSortear.get(rng.nextInt(disciplinasSemRestricaoPSortear.size()));
             disciplinasSemRestricaoPSortear.remove(disciplina);
@@ -68,6 +68,7 @@ public class Individuo {
                 i--;
            }
        }
+       
        
        this.nota = this.funcaoFitness(this);
     }
@@ -109,9 +110,7 @@ public class Individuo {
         if(Objects.isNull(gene)){
             return;
         }
-        Gene aux = null;
-        int interacoes = 0;
-        List<Gene> novosGenes ;
+        Gene aux;
         List<TimeSlot> timeSlots = this.TimeSlotsTurno(gene.getDisciplina().codigoTurno);
         for(int i = 0; i < timeSlots.size(); i++){
             aux = horario[this.mapaCursoPeriodo(gene.getDisciplina())][timeSlots.get(i).codigo - 1];
@@ -202,10 +201,12 @@ public class Individuo {
                         retorno[g.getTeorica()?0:1] ++;
                         this.GenesNaoAlocados.add(g);
                         genes.remove(g);
+                        g.setTimeSlot(null);
                     }else{
                         retorno[h.getTeorica()?0:1] ++;
                         this.GenesNaoAlocados.add(h);
                         genes.remove(h);
+                        h.setTimeSlot(null);
                     }
                     count --;
                 }
@@ -452,7 +453,7 @@ public class Individuo {
          * Disciplina Sem restrição
          */
         else{
-            List<TimeSlot> timeSlots = new ArrayList<TimeSlot>(TimeSlotsTurno(disciplina.codigoTurno));
+            List<TimeSlot> timeSlots = new ArrayList<>(TimeSlotsTurno(disciplina.codigoTurno));
             
             for(int i =0;i<timeSlots.size();i++){
                 if(!this.verificaDispProf(timeSlots.get(i), professor) || !this.verificaDisponibilidade(disciplina, timeSlots.get(i))){
@@ -620,7 +621,7 @@ public class Individuo {
      * @return true == matriculado || false == não matriculado
      */
     private boolean MatriculaAluno(Estudante estudante, Disciplina disciplina, List<TimeSlot> timeSlots){
-        int numAulas = timeSlots.size();
+        int numAulas = disciplina.cargaHorariaPratica + disciplina.cargaHorariaTeoria;
         timeSlots:
         for(TimeSlot t : timeSlots){
             for(int i = 0; i< ld.qtdPeriodos; i++){
@@ -949,7 +950,7 @@ public class Individuo {
 
                         salas.remove(i);
                         i--;
-                        break outraSala;
+                        break;
                     }
                 }
                 
@@ -1153,10 +1154,9 @@ public class Individuo {
        int pesoProfessorOscioso = 1;
        int pesoMateriaNaoAlocada = 1; 
        int lacunasVazias = 0;
-       int[] disciplinasNaoAlocadas;
-        for(int i = 0; i<ld.qtdPeriodos;i++){
+       for(int i = 0; i<ld.qtdPeriodos;i++){
            lacunasVazias += verificaLacunasVazias(individuo.horario[i]);
-        }
+       }
        int[] alunosNaoMatriculados = verificaAlunosNaoMatriculados(ld.Estudantes);
        int professoresOsciosos = verificaProfessoresOciosos(ld.Professores);
        int[] materiasNaoAlocadas = verificaMateriasNaoAlocadas();//{total,parcial(número de aulas faltando)}
@@ -1281,6 +1281,57 @@ public class Individuo {
         
         return retorno;
        }
+    
+    private void MatricularAluno(Estudante e){
+       int disciplinasCursadas;
+       int numAulas;
+       List<TimeSlot> timeSlots = new ArrayList<>();
+           disciplinasCursadas = 0;
+           
+           disciplinas:
+           for(Disciplina d: e.disciplinasACursar){
+               
+               numAulas = d.cargaHorariaPratica + d.cargaHorariaTeoria;
+               
+                for(int i = 0; i < ld.qtdTimeSlots; i++){
+                   
+                   if(!Objects.isNull(horario[this.mapaCursoPeriodo(d)][i])){
+                       
+                       if(horario[this.mapaCursoPeriodo(d)][i].getDisciplina() == d){
+                           numAulas --;
+                       }else
+                       if(horario[this.mapaCursoPeriodo(d)][i].getEstudantes().contains(e)){
+                            continue;
+                       }
+                       timeSlots.add(ld.TimeSlots.get(i));
+                   }
+                   
+                   
+                   
+                   if(numAulas == 0){
+                       disciplinasCursadas++;
+                       continue disciplinas;
+                   }
+               }
+               if(numAulas < d.cargaHorariaPratica + d.cargaHorariaTeoria){
+                   disciplinasCursadas++;
+                   for(TimeSlot t : timeSlots){
+                       if(!horario[this.mapaCursoPeriodo(d)][t.codigo - 1].getEstudantes().contains(e)){
+                           horario[this.mapaCursoPeriodo(d)][t.codigo - 1].addEstudante(e);
+                       }
+                   }
+               }
+           }
+           
+           if(disciplinasCursadas > 10){
+               DesmatriculaAluno(e);
+           }
+           
+       
+    }
+    
+    
+    
     
     
 }
