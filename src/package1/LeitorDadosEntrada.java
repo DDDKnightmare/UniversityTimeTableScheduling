@@ -3,6 +3,10 @@ package package1;
 import java.io.IOException;
 import java.util.Scanner;
 public class LeitorDadosEntrada {
+    
+    static String enderecoArqInfo;
+    static String enderecoArqRest;
+    
     /**
      * Exibe mensagens de erro
      * @param mensagem 
@@ -20,7 +24,7 @@ public class LeitorDadosEntrada {
         
         
       LeitorDados leitor = new LeitorDados();        
-      leitor.Executa("ag-informacoes.csv", "ag-restricoes.csv");
+      leitor.Executa(enderecoArqInfo, enderecoArqRest);
       
       
       while(numIndividuos <=0){
@@ -37,6 +41,14 @@ public class LeitorDadosEntrada {
       
       Arvore.imprimeNotas();
       
+    }
+    
+    
+    //metodo para receber o endereço dos arquivos
+    
+    public static void RecebeTexto(String endInfo, String endRest){
+        enderecoArqInfo = endInfo;
+        enderecoArqRest = endRest;
     }
     
 }
