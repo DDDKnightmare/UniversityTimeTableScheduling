@@ -93,9 +93,9 @@ public class Arvore {
         }
         
         List<Individuo> individuos = selecao(recombinar);
-        
+        Individuo elite = null;
         if(elitismo){
-            
+            elite = new Individuo(getMelhor());
         }
         
         
