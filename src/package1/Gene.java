@@ -23,6 +23,7 @@ public class Gene {
     private boolean aulaTeorica;
     private int qtdEstudantes;
     private boolean teorica;
+    private List<Gene> genes;
 //    public Gene(Professor professor, Sala sala, Disciplina disciplina, List<Short> estudantes){
 //        this.professor = professor;
 //        this.sala = sala;
@@ -51,7 +52,6 @@ public class Gene {
         this.disciplina = disciplina;
         this.timeSlot = timeSlot;
         this.estudantes = new ArrayList<>();
-        
     }
     
     public Gene(Professor professor, TimeSlot timeSlot, Disciplina disciplina,Sala sala, boolean teorica){
@@ -99,6 +99,7 @@ public class Gene {
         this.disciplina = gene.disciplina;
         this.timeSlot = gene.timeSlot;
         this.estudantes = gene.estudantes;
+        this.genes = gene.genes;
     }
     
     public boolean getAulaTeorica(){
@@ -107,6 +108,34 @@ public class Gene {
     
     public void setAulaTeorica(boolean teorica){
         this.aulaTeorica = teorica;
+    }
+    
+    public void setGenes(List<Gene> genes){
+        this.genes = genes;
+    }
+    
+    public void addGene(Gene gene){
+        this.genes.add(gene);
+    }
+    
+    public void removeGene(Gene gene){
+        this.genes.remove(gene);
+    }
+    
+    public void removeGene(int indice){
+        this.genes.remove(indice);
+    }
+    
+    public void addGenes(List<Gene> genes){
+        this.genes.addAll(genes);
+    }
+    
+    public void removeGenes(List<Gene> genes){
+        this.genes.removeAll(genes);
+    }
+    
+    public List<Gene> getGenes(){
+        return this.genes;
     }
     
     public TimeSlot getTimeSlot(){
