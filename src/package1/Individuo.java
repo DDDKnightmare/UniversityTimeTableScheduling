@@ -56,6 +56,20 @@ public class Individuo {
             
         }
         
+        for(int j = 0; j < listaGenesSemRestricao.size(); j++){
+            
+            listaGenesSemRestricao.set(j, new ArrayList<>(listaGenesSemRestricao.get(j)));
+            
+            for(int k = 0; k < listaGenesSemRestricao.size(); k++){
+                
+                listaGenesSemRestricao.get(j).set(k,new Gene(listaGenesSemRestricao.get(j).get(k)));
+                listaGenesSemRestricao.get(j).get(k).setGenes(listaGenesSemRestricao.get(j));
+                
+                
+            }
+            
+        }
+        
         
     }
     
