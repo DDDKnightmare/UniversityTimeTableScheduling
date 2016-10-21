@@ -14,7 +14,7 @@ public class Disciplina {
     public int codigoTurno;
     public List<Estudante> estudantesAMatricular;
     
-    List<TimeSlot> timesSlotsPossiveis;
+    List<TimeSlot> timeSlotsPossiveis;
     List<Professor> ProfessoresPodem;
     
     public Disciplina(int codigo, Curso curso, int codigoPeriodo, String descricao, int cargaHorariaTeoria, int tipoSalaTeoria, int cargaHorariaPratica, int tipoSalaPratica) {
@@ -27,7 +27,7 @@ public class Disciplina {
         this.cargaHorariaPratica = cargaHorariaPratica;
         this.tipoSalaPratica = tipoSalaPratica;
         
-        this.timesSlotsPossiveis = new ArrayList<>();        
+        this.timeSlotsPossiveis = new ArrayList<>();        
         this.ProfessoresPodem = new ArrayList<>();
         this.estudantesAMatricular = new ArrayList<>();
     }

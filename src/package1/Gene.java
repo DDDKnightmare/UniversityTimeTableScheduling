@@ -21,7 +21,7 @@ public class Gene {
     private List<Estudante> estudantes;
     private TimeSlot timeSlot; 
     private boolean aulaTeorica;
-    private int qtdEstudantes;
+    private int qtdEstudantes = 0;
     private boolean teorica;
     private List<Gene> genes;
 //    public Gene(Professor professor, Sala sala, Disciplina disciplina, List<Short> estudantes){
@@ -81,6 +81,15 @@ public class Gene {
     public boolean getTeorica(){
         return teorica;
     }
+    
+    public void setNull(){
+        this.professor = null;
+        this.estudantes = null;
+        this.qtdEstudantes = 0;
+        this.sala = null;
+        this.timeSlot = null;
+    }
+    
     
     public void setTeorica(boolean teorica){
         this.teorica = teorica;
@@ -155,11 +164,16 @@ public class Gene {
     }
     
     public void addEstudante(Estudante estudante){
+        if(Objects.isNull(estudantes)){
+            estudantes = new ArrayList<>();
+        }
         estudantes.add(estudante);
+        this.qtdEstudantes++;
     }
     
     public void removeEstudante(short estudante){
         estudantes.remove(estudante);
+        this.qtdEstudantes--;
     }
     
     public Professor getProfessor(){
@@ -187,9 +201,26 @@ public class Gene {
     }
     
     public String toString(){
-        return "disciplina: "+(Objects.isNull(this.disciplina)? "null" : this.getDisciplina().codigo)+
-                "\ntimeSlot: "+(Objects.isNull(this.getTimeSlot())? "null" : timeSlot.toString())+
-                "\nperiodo: "+(Objects.isNull(this.disciplina)?"null" : this.getDisciplina().codigoPeriodo);
+        String retorno =    "Disciplina: "+(Objects.isNull(this.disciplina)? "null" : this.getDisciplina().codigo)+
+                            "\nTimeSlot: "+(Objects.isNull(this.getTimeSlot())? "null" : timeSlot.toString())+
+                            "\nPeriodo: "+(Objects.isNull(this.disciplina)?"null" : this.getDisciplina().codigoPeriodo)+
+                            "\nEstudantes: ";
+        if(Objects.isNull(this.estudantes)){
+            retorno+="null";
+        }else{
+            if(!estudantes.isEmpty()){
+                for(Estudante e: estudantes){
+                    if(!Objects.isNull(e)){
+                        retorno += e.nome +(estudantes.get(estudantes.size() - 1) == e? ("\nNúmero de alunos: " +  estudantes.size()+"\n"): ", ");
+                    }
+                }
+            }else{
+                retorno += "NENHUM ALUNO MATRICULADO\n";
+            }
+        }
+        retorno +=          "Sala: "+(Objects.isNull(this.sala)? "null" : this.sala.descricao +" - Tipo: " +this.sala.tipoDeSala + " - Capacidade: "+sala.capacidade);
+        return retorno;
+
     }
     
 }

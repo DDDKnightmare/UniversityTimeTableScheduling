@@ -44,7 +44,7 @@ public class LeitorDados {
         LeRestricoes(restr);   
         
         for(Disciplina d: Disciplinas){
-            if(d.timesSlotsPossiveis.size() > 0)
+            if(d.timeSlotsPossiveis.size() > 0)
                 DisciplinasComRestricao.add(d);
             else
                 DisciplinasSemRestricao.add(d);               
@@ -358,7 +358,7 @@ public class LeitorDados {
             timeSlot = Integer.parseInt(restricaoDisciplina[i].replaceAll(" ", ""));
             for(int j = 0; j < TimeSlots.size(); j++){
                 if(TimeSlots.get(j).codigo == timeSlot){
-                    disciplina.timesSlotsPossiveis.add(TimeSlots.get(j));                    
+                    disciplina.timeSlotsPossiveis.add(TimeSlots.get(j));                    
                 }                    
             }
         }            

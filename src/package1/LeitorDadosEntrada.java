@@ -1,6 +1,7 @@
 package package1;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Scanner;
 public class LeitorDadosEntrada {
     
@@ -24,7 +25,8 @@ public class LeitorDadosEntrada {
         
         
       LeitorDados leitor = new LeitorDados();        
-      leitor.Executa(enderecoArqInfo, enderecoArqRest);
+      leitor.Executa("ag-informacoes.csv", "ag-restricoes.csv");
+//    leitor.Executa(enderecoArqInfo, enderecoArqRest);
       
       
       while(numIndividuos <=0){
@@ -40,7 +42,14 @@ public class LeitorDadosEntrada {
       }
       
       Arvore.imprimeNotas();
-      
+      Individuo melhor = Arvore.getMelhor();
+      for(int i = 0; i < leitor.qtdPeriodos; i++){
+          for(int j = 0; j < leitor.qtdTimeSlots; j++){
+              
+              System.out.println("TimeSlot: "+ j + ";   Período: " + i + ";  " + (Objects.isNull(melhor.horario[i][j])? "null" : melhor.horario[i][j].toString()));
+              
+          }
+      }
     }
     
     

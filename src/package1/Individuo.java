@@ -24,7 +24,8 @@ public class Individuo {
       
     public Gene[][] horario;  // Matriz [timeSlot][mapeamento(Curso,Periodo)]
     
-    private List<List<Gene>> listaGenes;
+    private List<List<Gene>> listaGenesComRestricao;
+    private List<List<Gene>> listaGenesSemRestricao;
     
     public Individuo(LeitorDados ld){
         this.ld = ld;
@@ -33,8 +34,8 @@ public class Individuo {
         Gene aux;
         boolean teorica;
         List<Gene> g = new ArrayList<>();
-        listaGenes = new ArrayList<>();
-        for(Disciplina d : ld.Disciplinas){
+        listaGenesComRestricao = new ArrayList<>();
+        for(Disciplina d : ld.DisciplinasComRestricao){
             p = d.cargaHorariaPratica;
             t = d.cargaHorariaTeoria;
             for(int i = 0; i < t+p; i ++){
@@ -49,12 +50,33 @@ public class Individuo {
                 i--;
                 g.add(aux);
                 aux.setGenes(g);
-                if(!listaGenes.contains(aux.getGenes())){
-                    listaGenes.add(aux.getGenes());
+                if(!listaGenesComRestricao.contains(aux.getGenes())){
+                    listaGenesComRestricao.add(aux.getGenes());
                 }
             }
             g = new ArrayList<>();
-            
+        }
+        listaGenesSemRestricao = new ArrayList<>();
+        for(Disciplina d : ld.DisciplinasSemRestricao){
+            p = d.cargaHorariaPratica;
+            t = d.cargaHorariaTeoria;
+            for(int i = 0; i < t+p; i ++){
+                teorica = (t > 0 ? (p > 0? rng.nextBoolean() : true) : false);
+                aux = new Gene(d);
+                aux.setTeorica(teorica);
+                if(teorica){
+                    t--;
+                }else{
+                    p--;
+                }
+                i--;
+                g.add(aux);
+                aux.setGenes(g);
+                if(!listaGenesSemRestricao.contains(aux.getGenes())){
+                    listaGenesSemRestricao.add(aux.getGenes());
+                }
+            }
+            g = new ArrayList<>();
         }
         this.GenesNaoAlocados = new ArrayList<>();
         horario = new Gene[ld.qtdPeriodos][ld.qtdTimeSlots];
@@ -68,13 +90,22 @@ public class Individuo {
     private void geraIndividuo(LeitorDados ld){
         
         List<Gene> gaux;
-        while(listaGenes.size() > 0){
+        while(listaGenesComRestricao.size() > 0){
             
-            gaux = listaGenes.get(listaGenes.size() > 1? rng.nextInt(listaGenes.size()) : 0);
+            gaux = listaGenesComRestricao.get(listaGenesComRestricao.size() > 1? rng.nextInt(listaGenesComRestricao.size()) : 0);
             
             this.SetGeneDisciplina(gaux);
-            listaGenes.remove(gaux);
-        }      
+            listaGenesComRestricao.remove(gaux);
+        }
+        
+        while(listaGenesSemRestricao.size() > 0){
+            
+            gaux = listaGenesSemRestricao.get(listaGenesSemRestricao.size() > 1? rng.nextInt(listaGenesSemRestricao.size()) : 0);
+            
+            this.SetGeneDisciplina(gaux);
+            listaGenesSemRestricao.remove(gaux);
+        }
+        
        
         Gene aux;
         
@@ -87,6 +118,9 @@ public class Individuo {
            }
        }
        
+       for(Estudante e : ld.Estudantes){
+           this.MatricularAluno(e);
+       }
        
        this.nota = this.funcaoFitness(this);
     }
@@ -128,9 +162,13 @@ public class Individuo {
             return;
         }
         Gene aux;
-        List<TimeSlot> timeSlots = this.TimeSlotsTurno(gene.getDisciplina().codigoTurno);
-        
-        for(TimeSlot t = timeSlots.isEmpty()? null : (timeSlots.get(timeSlots.size() > 1? rng.nextInt(timeSlots.size()) : 0)); !timeSlots.isEmpty();t = timeSlots.isEmpty()? null : (timeSlots.get(timeSlots.size() > 1? rng.nextInt(timeSlots.size()) : 0))){
+        List<TimeSlot> timeSlots = (Objects.isNull(disciplina.timeSlotsPossiveis) 
+                                    || disciplina.timeSlotsPossiveis.isEmpty())
+                                    ?this.TimeSlotsTurno(gene.getDisciplina().codigoTurno) 
+                                    : new ArrayList<>(disciplina.timeSlotsPossiveis);
+        TimeSlot t;
+        while(!timeSlots.isEmpty()){
+            t = timeSlots.isEmpty()? null : (timeSlots.get(timeSlots.size() > 1? rng.nextInt(timeSlots.size()) : 0));
             aux = horario[this.mapaCursoPeriodo(gene.getDisciplina())][t.codigo - 1];
             if(!Objects.isNull(aux)){
                 
@@ -146,13 +184,14 @@ public class Individuo {
             List<Professor> professoresPodem = new ArrayList<>(gene.getDisciplina().ProfessoresPodem);
             Professor professor;
             List<Sala> salas;
-            boolean teorica;
             
             timeSlots:
-            for(TimeSlot t = timeSlots.isEmpty()? null : (timeSlots.get(timeSlots.size() > 1? rng.nextInt(timeSlots.size()) : 0)); !timeSlots.isEmpty();t = timeSlots.isEmpty()? null : (timeSlots.get(timeSlots.size() > 1? rng.nextInt(timeSlots.size()) : 0))){
+            while(!timeSlots.isEmpty()){
+                t = timeSlots.isEmpty()? null : (timeSlots.get(timeSlots.size() > 1? rng.nextInt(timeSlots.size()) : 0));
                 if(Objects.isNull(t)){
                     break;
                 }
+                professores:
                 for(int j = 0; j < professoresPodem.size(); j++){
                     professor = professoresPodem.get(rng.nextInt(professoresPodem.size()));
                     professoresPodem.remove(professor);
@@ -165,12 +204,12 @@ public class Individuo {
                            salas = this.SalasPossiveis(t, gene.getTeorica()? gene.getDisciplina().tipoSalaTeoria : gene.getDisciplina().tipoSalaPratica);
 
                            if(!Objects.isNull(salas) && !salas.isEmpty()){
-
+                               
+                               gene.setSala(salas.get(rng.nextInt(salas.size())));
+                               
                                this.alocar(gene, t);
 
-                               timeSlots.remove(t);
-                               
-                               continue timeSlots;
+                               break professores;
                            }
                     }
                     
@@ -272,10 +311,10 @@ public class Individuo {
 //            numTimeSlots = teorica? gene.getDisciplina().cargaHorariaTeoria : gene.getDisciplina().cargaHorariaPratica; // 
 //        }
 //        
-//        List<TimeSlot> timeSlots = (Objects.isNull(gene.getDisciplina().timesSlotsPossiveis) // Se a disciplina não possui restrição de horário:
-//                                   || gene.getDisciplina().timesSlotsPossiveis.isEmpty())    // timeSlots para verificar = 
+//        List<TimeSlot> timeSlots = (Objects.isNull(gene.getDisciplina().timeSlotsPossiveis) // Se a disciplina não possui restrição de horário:
+//                                   || gene.getDisciplina().timeSlotsPossiveis.isEmpty())    // timeSlots para verificar = 
 //                                    ? this.TimeSlotsTurno(gene.getDisciplina().codigoTurno)  // timeSlots correspondentes ao turno do curso.(sem restrição)
-//                                    : gene.getDisciplina().timesSlotsPossiveis;              // ou timeSlots nos quais a disciplina DEVE ser ministrada(com restrição)
+//                                    : gene.getDisciplina().timeSlotsPossiveis;              // ou timeSlots nos quais a disciplina DEVE ser ministrada(com restrição)
 //        
 //        
 //        List<Gene> genes = new ArrayList<>(); // lista com genes a serem retornados.
@@ -425,9 +464,9 @@ public class Individuo {
         /**
          * Disciplina Com restrição
          */
-        if(!Objects.isNull(disciplina.timesSlotsPossiveis) && !disciplina.timesSlotsPossiveis.isEmpty()){
+        if(!Objects.isNull(disciplina.timeSlotsPossiveis) && !disciplina.timeSlotsPossiveis.isEmpty()){
             
-                List<TimeSlot> timeSlots = new ArrayList<>(disciplina.timesSlotsPossiveis);
+                List<TimeSlot> timeSlots = new ArrayList<>(disciplina.timeSlotsPossiveis);
 
 
             for(int i = 0; i< timeSlots.size(); i++){
@@ -992,11 +1031,10 @@ public class Individuo {
         Disciplina disciplina = genes.get(0).getDisciplina();
         List<Professor> professoresPossiveis = new ArrayList<>(disciplina.ProfessoresPodem);// lista com os professores que podem ministrar a disciplina
         Professor professor;
-        List<Sala> salas = null;
+        List<Sala> salas;
         if(professoresPossiveis.isEmpty()){
             return;
         }
-        
         List<TimeSlot> timeSlots; // lista com os timeSlots nos quais a disciplina DEVE ser ministrada
         professores:
         do{
@@ -1006,34 +1044,32 @@ public class Individuo {
             if(!Objects.isNull(timeSlots)){ // Professor que pode dar aula encontrado
 
                 List<Gene> aux = new ArrayList<>(genes);
-                
+                TimeSlot t;
+                Gene j;
                 timeSlots:
-                for(TimeSlot t = timeSlots.isEmpty()? null : timeSlots.get(timeSlots.size() > 0 ? rng.nextInt(timeSlots.size()) : 0); !timeSlots.isEmpty();t = timeSlots.isEmpty()? null : timeSlots.get(timeSlots.size() > 0 ? rng.nextInt(timeSlots.size()) : 0)){
-                    for(Gene j = aux.isEmpty()? null : aux.get(aux.size() > 1 ? rng.nextInt(aux.size()) : 0); !aux.isEmpty();j = aux.isEmpty()? null : aux.get(aux.size() > 1 ? rng.nextInt(aux.size()) : 0)){
+                while(!timeSlots.isEmpty()){
+                    t = timeSlots.isEmpty()? null : timeSlots.get(timeSlots.size() > 0 ? rng.nextInt(timeSlots.size()) : 0);
+                    while(!aux.isEmpty()){
+                        j = aux.isEmpty()? null : aux.get(aux.size() > 1 ? rng.nextInt(aux.size()) : 0);    
                         if(Objects.isNull(j) || Objects.isNull(t)){
                             break timeSlots;
                         }
                         salas = this.SalasPossiveis(t, j.getTeorica()? disciplina.tipoSalaTeoria : disciplina.tipoSalaPratica);
-                        if(!Objects.isNull(salas) && !salas.isEmpty()){
+                        if(Objects.isNull(salas) || salas.isEmpty()){
+                            aux.remove(j);
+                        }else{
                             j.setProfessor(professor);
                             j.setTimeSlot(t);
                             j.setSala(salas.get(salas.size()>1?rng.nextInt(salas.size()): 0));
+                            
+                            this.alocar(j, j.getTimeSlot());
+                            
                             timeSlots.remove(t);
                             aux.remove(j);
                             break;
-                        }else{
-                            aux.remove(j);
                         }
                     }
                     timeSlots.remove(t);
-                }
-                if(!Objects.isNull(genes) && !genes.isEmpty()){
-                    for(Gene gene: genes){
-                        if(!Objects.isNull(gene) && !Objects.isNull(gene.getTimeSlot())){
-                            this.alocar(gene, gene.getTimeSlot());
-                        System.out.println(gene.toString());
-                        }
-                    }
                 }
             }
         }while(!professoresPossiveis.isEmpty());
@@ -1067,7 +1103,12 @@ public class Individuo {
         if(Objects.isNull(horario[this.mapaCursoPeriodo(gene.getDisciplina())][timeSlot.codigo - 1])){
             horario[this.mapaCursoPeriodo(gene.getDisciplina())][timeSlot.codigo - 1] = gene;
         }else{
-            this.GenesNaoAlocados.add(gene);
+            if(horario[this.mapaCursoPeriodo(gene.getDisciplina())][timeSlot.codigo - 1] != gene){
+                if(this.GenesNaoAlocados.contains(gene)){
+                    this.GenesNaoAlocados.add(gene);
+                }
+                gene.setNull();
+            }
         }
     }
     
@@ -1211,43 +1252,53 @@ public class Individuo {
     
     private void MatricularAluno(Estudante e){
        int disciplinasCursadas;
-       int numAulas;
-       List<TimeSlot> timeSlots = new ArrayList<>();
+       int capacidadeSala = -1;
+       List<TimeSlot> timeSlots = new ArrayList<>(ld.TimeSlots);
            disciplinasCursadas = 0;
-           
+           Gene gene;
            disciplinas:
            for(Disciplina d: e.disciplinasACursar){
-               
-               numAulas = d.cargaHorariaPratica + d.cargaHorariaTeoria;
-               
-                for(int i = 0; i < ld.qtdTimeSlots; i++){
-                   
+                for(int i = 0; i < timeSlots.size(); i++){
                    if(!Objects.isNull(horario[this.mapaCursoPeriodo(d)][i])){
-                       
+                       gene = null;
                        if(horario[this.mapaCursoPeriodo(d)][i].getDisciplina() == d){
-                           numAulas --;
-                       }else
-                       if(horario[this.mapaCursoPeriodo(d)][i].getEstudantes().contains(e)){
-                            continue;
+                            gene = horario[this.mapaCursoPeriodo(d)][i];
+                            for(Gene g : gene.getGenes()){
+                                if(!Objects.isNull(g.getTimeSlot())){
+                                    if(g.getSala().capacidade < capacidadeSala || capacidadeSala == -1){
+                                        capacidadeSala = g.getSala().capacidade;
+                                    }
+                                    timeSlots.remove(g.getTimeSlot());
+                                    if(g.getTimeSlot().codigo <= i){
+                                        i--;
+                                    }
+                                }
+                            }
+                            for(Gene g : gene.getGenes()){
+                                if(!Objects.isNull(g.getTimeSlot())){
+                                    if(g.getEstudantes() != gene.getEstudantes()){
+                                        g.setEstudantes(gene.getEstudantes());
+                                    }
+                                    if(capacidadeSala > -1 && g.getQtdEstudantes() < capacidadeSala){
+                                        if(!g.getEstudantes().contains(e)){
+                                            g.addEstudante(e);
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                            for(Gene g : gene.getGenes()){
+                                if(g.getEstudantes().contains(e)){
+                                    disciplinasCursadas++;
+                                    break;
+                                }
+                            }
                        }
-                       timeSlots.add(ld.TimeSlots.get(i));
-                   }
-                   
-                   
-                   
-                   if(numAulas == 0){
-                       disciplinasCursadas++;
-                       continue disciplinas;
-                   }
-               }
-               if(numAulas < d.cargaHorariaPratica + d.cargaHorariaTeoria){
-                   disciplinasCursadas++;
-                   for(TimeSlot t : timeSlots){
-                       if(!horario[this.mapaCursoPeriodo(d)][t.codigo - 1].getEstudantes().contains(e)){
-                           horario[this.mapaCursoPeriodo(d)][t.codigo - 1].addEstudante(e);
+                       if(!Objects.isNull(gene)){
+                            break;
                        }
                    }
-               }
+                }
            }
            
            if(disciplinasCursadas > 10){
