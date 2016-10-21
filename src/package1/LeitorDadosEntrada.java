@@ -46,7 +46,7 @@ public class LeitorDadosEntrada {
       for(int i = 0; i < leitor.qtdPeriodos; i++){
           for(int j = 0; j < leitor.qtdTimeSlots; j++){
               
-              System.out.println("TimeSlot: "+ j + ";   Período: " + i + ";  " + (Objects.isNull(melhor.horario[i][j])? "null" : melhor.horario[i][j].toString()));
+              System.out.println("TimeSlot: "+ (j+1) + ";   Período: " + (i+1) + ";  " + (Objects.isNull(melhor.horario[i][j])? "null" : melhor.horario[i][j].toString()));
               
           }
       }
