@@ -1,6 +1,8 @@
 package package1;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /*
@@ -14,7 +16,7 @@ import java.util.Objects;
  * @author GMTH
  */
 public class Arvore {
-    
+    private static int numIndividuos = 0;
     private static No raiz = null;
     
     public static No getRaiz(){
@@ -24,6 +26,81 @@ public class Arvore {
     public static void imprimeNotas(){
         imprimeNotas(raiz);
     }
+    
+    private static List<Individuo> selecao(int numIndividuos){
+        List<Individuo> individuos = new ArrayList<>();
+        No aux = raiz;
+        if(Objects.isNull(aux)){
+            return null;
+        }
+        while(individuos.size() < numIndividuos && individuos.size() < Arvore.numIndividuos){
+            
+            if(Objects.isNull(aux.getRight())){
+                if(Objects.isNull(aux.getLeft())){ 
+                    if(Individuo.rng.nextBoolean()){
+                        if(!individuos.contains(aux.getIndividuo())){
+                            individuos.add(aux.getIndividuo());
+                        }
+                    }
+                    aux = raiz;
+                }
+                if(Individuo.rng.nextBoolean()){
+                    aux = aux.getLeft();
+                }else{
+                    if(!individuos.contains(aux.getIndividuo())){
+                        individuos.add(aux.getIndividuo());
+                        aux = aux.getLeft();
+                    }
+                }
+            }else{
+                if(Objects.isNull(aux.getLeft())){
+                    if(Individuo.rng.nextBoolean()){
+                        if(!individuos.contains(aux.getIndividuo())){
+                            individuos.add(aux.getIndividuo());
+                        }
+                    }
+                    aux = aux.getRight();
+                }else{
+                    if(Individuo.rng.nextBoolean()){
+                        if(!individuos.contains(aux.getIndividuo())){
+                            individuos.add(aux.getIndividuo());
+                        }  
+                    }
+                    if(Individuo.rng.nextBoolean()){
+                        aux = aux.getLeft();
+                    }else{
+                        aux = aux.getRight();
+                    }
+                    
+                }
+            }
+        }
+        
+        return individuos;
+        
+    }
+    
+    
+    
+    
+    public static void recombinar(float porcentagemDaPopulacao, boolean elitismo){
+        int recombinar = (int)porcentagemDaPopulacao*numIndividuos;
+        if(recombinar < 2 && numIndividuos >= 2){
+            recombinar = 2;
+        }
+        if(recombinar%2 > 0){
+            recombinar++;
+        }
+        
+        List<Individuo> individuos = selecao(recombinar);
+        
+        if(elitismo){
+            
+        }
+        
+        
+    }
+    
     
     public static void imprimeNotas(No aux){
         if(Objects.isNull(aux)) return;
@@ -39,6 +116,7 @@ public class Arvore {
         No aux = raiz;
         if(Objects.isNull(aux)){
             raiz = new No(individuo);
+            numIndividuos++;
             return ;
         }
         While:
@@ -49,6 +127,7 @@ public class Arvore {
                     aux.setLeft(new No(individuo));
                     aux.getLeft().setPai(aux);
                     aux.getLeft().lSon = true;
+                    numIndividuos++;
                     break;
                 }
                 aux = aux.getLeft();
@@ -58,6 +137,7 @@ public class Arvore {
                     aux.setRight(new No(individuo));
                     aux.getRight().setPai(aux);
                     aux.getRight().lSon = false;
+                    numIndividuos++;
                     break;
                 }
                 aux = aux.getRight();
@@ -67,6 +147,7 @@ public class Arvore {
                         if(Objects.isNull(aux.getLeft())){
                             aux.setLeft(new No(individuo));
                             aux.getLeft().setPai(aux);
+                            numIndividuos++;
                             break While;
                         }
                         
@@ -86,6 +167,7 @@ public class Arvore {
                         if(Objects.isNull(aux.getRight())){
                             aux.setRight(new No(individuo));
                             aux.getRight().setPai(aux);
+                            numIndividuos++;
                             break While;
                         }
                         if(aux.getNota() == aux.getRight().getNota()){

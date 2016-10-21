@@ -27,6 +27,38 @@ public class Individuo {
     private List<List<Gene>> listaGenesComRestricao;
     private List<List<Gene>> listaGenesSemRestricao;
     
+    public Individuo(Individuo i){
+        this.GenesNaoAlocados = new ArrayList<>(i.GenesNaoAlocados);
+        this.ld = i.ld;
+        this.listaGenesComRestricao = new ArrayList<>(i.listaGenesComRestricao);
+        this.listaGenesSemRestricao = new ArrayList<>(i.listaGenesSemRestricao);
+        this.nota = i.nota;
+        
+        for(int j = 0; j< ld.qtdPeriodos; j++){
+            for(int k = 0; k < ld.qtdTimeSlots; k++){
+                
+                this.horario[j][k] = new Gene(i.horario[j][k]);
+                                
+            }
+        }
+        
+        for(int j = 0; j < listaGenesComRestricao.size(); j++){
+            
+            listaGenesComRestricao.set(j, new ArrayList<>(listaGenesComRestricao.get(j)));
+            
+            for(int k = 0; k < listaGenesComRestricao.size(); k++){
+                
+                listaGenesComRestricao.get(j).set(k,new Gene(listaGenesComRestricao.get(j).get(k)));
+                listaGenesComRestricao.get(j).get(k).setGenes(listaGenesComRestricao.get(j));
+                
+                
+            }
+            
+        }
+        
+        
+    }
+    
     public Individuo(LeitorDados ld){
         this.ld = ld;
         int t;

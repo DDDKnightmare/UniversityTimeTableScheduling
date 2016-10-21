@@ -20,7 +20,6 @@ public class Gene {
     private Disciplina disciplina;
     private List<Estudante> estudantes;
     private TimeSlot timeSlot; 
-    private boolean aulaTeorica;
     private int qtdEstudantes = 0;
     private boolean teorica;
     private List<Gene> genes;
@@ -109,15 +108,13 @@ public class Gene {
         this.timeSlot = gene.timeSlot;
         this.estudantes = gene.estudantes;
         this.genes = gene.genes;
+        this.qtdEstudantes = gene.qtdEstudantes;
+        this.sala = gene.sala;
+        this.teorica = gene.teorica;
     }
     
-    public boolean getAulaTeorica(){
-        return this.aulaTeorica;
-    }
     
-    public void setAulaTeorica(boolean teorica){
-        this.aulaTeorica = teorica;
-    }
+    
     
     public void setGenes(List<Gene> genes){
         this.genes = genes;
