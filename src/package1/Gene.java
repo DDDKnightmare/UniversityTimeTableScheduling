@@ -218,6 +218,7 @@ public class Gene {
                 retorno += "NENHUM ALUNO MATRICULADO\n";
             }
         }
+        retorno += "Professor: "+(Objects.isNull(this.professor)? "null" : this.professor.nome) + "\n";
         retorno +=          "Sala: "+(Objects.isNull(this.sala)? "null" : this.sala.descricao +" - Tipo: " +this.sala.tipoDeSala + " - Capacidade: "+sala.capacidade);
         return retorno;
 
