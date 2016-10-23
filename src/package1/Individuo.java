@@ -203,7 +203,7 @@ public class Individuo {
            this.MatricularAluno(e);
        }
        
-       this.nota = this.funcaoFitness(this);
+       this.nota = this.funcaoFitness();
     }
     
     
@@ -284,6 +284,8 @@ public class Individuo {
          }
          this.horario[linha][coluna] = null;
          this.horario[linha2][coluna2] = gene;
+         
+         this.funcaoFitness();
          
      }
     
@@ -1231,7 +1233,7 @@ public class Individuo {
         }
     }
     
-    public int funcaoFitness (Individuo individuo) {
+    public int funcaoFitness () {
        int nota = 9500;
        
        int pesoLacunasVazias  = 1;
@@ -1242,7 +1244,7 @@ public class Individuo {
        int pesoMateriaNaoAlocada = 1; 
        int lacunasVazias = 0;
        for(int i = 0; i<ld.qtdPeriodos;i++){
-           lacunasVazias += verificaLacunasVazias(individuo.horario[i]);
+           lacunasVazias += verificaLacunasVazias(this.horario[i]);
        }
        int[] alunosNaoMatriculados = verificaAlunosNaoMatriculados(ld.Estudantes);
        int professoresOsciosos = verificaProfessoresOciosos(ld.Professores);
