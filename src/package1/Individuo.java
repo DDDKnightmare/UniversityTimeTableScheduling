@@ -18,9 +18,6 @@ public class Individuo {
     public static final Random rng = new Random(); // gerador de números aleatórios
     
 //  Fim RNG    
-    private static List<Disciplina> disciplinasSemRestricaoPSortear; // Disciplinas SEM restrição a ser sorteadas
-    
-    private static List<Disciplina> disciplinasComRestricaoPSortear; // Disciplinas COM restrição a ser sorteadas
       
     public Gene[][] horario;  // Matriz [timeSlot][mapeamento(Curso,Periodo)]
     
@@ -29,16 +26,30 @@ public class Individuo {
     
     public Individuo(Individuo i){
         this.GenesNaoAlocados = new ArrayList<>(i.GenesNaoAlocados);
+        List<Gene> genes;
+        for(Gene g : GenesNaoAlocados){
+            genes = g.getGenes();
+            for(Gene k : genes){
+                k = new Gene(k,true);
+                if(g.getTimeSlot() == k.getTimeSlot()
+                        &&
+                   g.getDisciplina() == k.getDisciplina()){
+                    k.setGenes(genes);
+                }
+            }
+            
+            
+        }
         this.ld = i.ld;
         this.listaGenesComRestricao = new ArrayList<>(i.listaGenesComRestricao);
         this.listaGenesSemRestricao = new ArrayList<>(i.listaGenesSemRestricao);
         this.nota = i.nota;
-        
+        this.horario = new Gene[ld.qtdPeriodos][ld.qtdTimeSlots];
         for(int j = 0; j< ld.qtdPeriodos; j++){
             for(int k = 0; k < ld.qtdTimeSlots; k++){
-                
-                this.horario[j][k] = new Gene(i.horario[j][k]);
-                                
+                if(!Objects.isNull(this.horario[j][k])){
+                    this.horario[j][k] = new Gene(i.horario[j][k]);
+                }
             }
         }
         
@@ -46,7 +57,7 @@ public class Individuo {
             
             listaGenesComRestricao.set(j, new ArrayList<>(listaGenesComRestricao.get(j)));
             
-            for(int k = 0; k < listaGenesComRestricao.size(); k++){
+            for(int k = 0; k < listaGenesComRestricao.get(j).size(); k++){
                 
                 listaGenesComRestricao.get(j).set(k,new Gene(listaGenesComRestricao.get(j).get(k)));
                 listaGenesComRestricao.get(j).get(k).setGenes(listaGenesComRestricao.get(j));
@@ -60,7 +71,7 @@ public class Individuo {
             
             listaGenesSemRestricao.set(j, new ArrayList<>(listaGenesSemRestricao.get(j)));
             
-            for(int k = 0; k < listaGenesSemRestricao.size(); k++){
+            for(int k = 0; k < listaGenesSemRestricao.get(j).size(); k++){
                 
                 listaGenesSemRestricao.get(j).set(k,new Gene(listaGenesSemRestricao.get(j).get(k)));
                 listaGenesSemRestricao.get(j).get(k).setGenes(listaGenesSemRestricao.get(j));
@@ -71,6 +82,30 @@ public class Individuo {
         }
         
         
+    }
+    
+    public List<List<Gene>> getGenesComRestricao(){
+        return this.listaGenesComRestricao;
+    }
+    
+    public List<List<Gene>> getGenesSemRestricao(){
+        return this.listaGenesSemRestricao;
+    }
+    
+    public void setGenesComRestricao(List<List<Gene>> listaGenesComRestricao){
+        this.listaGenesComRestricao = listaGenesComRestricao;
+    }
+    
+    public void setGenesSemRestricao(List<List<Gene>> listaGenesSemRestricao){
+        this.listaGenesSemRestricao = listaGenesSemRestricao;
+    }
+    
+    public List<Gene> getGenesNaoAlocados(){
+        return this.GenesNaoAlocados;
+    }
+    
+    public void setGenesNaoAlocados(List<Gene> GenesNaoAlocados){
+        this.GenesNaoAlocados = GenesNaoAlocados;
     }
     
     public Individuo(LeitorDados ld){
@@ -134,22 +169,22 @@ public class Individuo {
      * @param ld 
      */
     private void geraIndividuo(LeitorDados ld){
-        
+        List<List<Gene>> listaAux = new ArrayList<>(listaGenesComRestricao);
         List<Gene> gaux;
-        while(listaGenesComRestricao.size() > 0){
+        while(listaAux.size() > 0){
             
-            gaux = listaGenesComRestricao.get(listaGenesComRestricao.size() > 1? rng.nextInt(listaGenesComRestricao.size()) : 0);
+            gaux = listaAux.get(listaAux.size() > 1? rng.nextInt(listaAux.size()) : 0);
             
             this.SetGeneDisciplina(gaux);
-            listaGenesComRestricao.remove(gaux);
+            listaAux.remove(gaux);
         }
-        
-        while(listaGenesSemRestricao.size() > 0){
+        listaAux = new ArrayList<>(listaGenesSemRestricao);
+        while(listaAux.size() > 0){
             
-            gaux = listaGenesSemRestricao.get(listaGenesSemRestricao.size() > 1? rng.nextInt(listaGenesSemRestricao.size()) : 0);
+            gaux = listaAux.get(listaAux.size() > 1? rng.nextInt(listaAux.size()) : 0);
             
             this.SetGeneDisciplina(gaux);
-            listaGenesSemRestricao.remove(gaux);
+            listaAux.remove(gaux);
         }
         
        
@@ -191,7 +226,66 @@ public class Individuo {
     }
     
     
+    public void removerConcorrentes(Gene gene){
+        
+        int t = gene.getTimeSlot().codigo -1;
+        Gene aux;
+        for(int i = 0; i < ld.qtdPeriodos; i ++){
+            aux = horario[i][t];
+            if(!Objects.isNull(aux)){
+                if(aux.getProfessor() == gene.getProfessor()
+                   ||
+                   aux.getSala() == gene.getSala()){
+                        aux.setNull();
+                        GenesNaoAlocados.add(aux);
+                }else{
+                    if(!Objects.isNull(gene.getEstudantes()) && !Objects.isNull(aux.getEstudantes())){
+                        for(Estudante e : gene.getEstudantes()){
+                            if(aux.getEstudantes().contains(e)){
+                                aux.getEstudantes().remove(e);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Gene g;
+        int i = 0;
+        while(i < GenesNaoAlocados.size()){
+            g = GenesNaoAlocados.get(i);
+            this.AlocaGeneImcompletos(g);
+            if(i<GenesNaoAlocados.size()){
+                if(g == GenesNaoAlocados.get(i)){
+                    i++;
+                }
+            }
+        }
+    }
     
+    public void mutacao (){
+         Gene gene = null;
+         int linha = 0;
+         int coluna = 0;
+         int linha2 =0;
+         int coluna2 =0;
+         
+         
+         // pegar um gene aleatorio
+         while(gene == null){
+             linha = rng.nextInt(ld.qtdPeriodos);
+             coluna = rng.nextInt(ld.qtdTimeSlots);
+             gene = this.horario[linha][coluna];
+         }
+         //procurar um lugar aleratorio
+        
+         while(horario[linha2][coluna2] != null){
+             linha2 = rng.nextInt(ld.qtdPeriodos);
+             coluna2 = rng.nextInt(ld.qtdTimeSlots);
+         }
+         this.horario[linha][coluna] = null;
+         this.horario[linha2][coluna2] = gene;
+         
+     }
     
    
     
@@ -203,66 +297,45 @@ public class Individuo {
      * @return 
      */
     private void AlocaGeneImcompletos(Gene gene){
-        Disciplina disciplina = gene.getDisciplina();
         if(Objects.isNull(gene)){
             return;
         }
-        Gene aux;
+        
+        Disciplina disciplina = gene.getDisciplina();
+        
+        
         List<TimeSlot> timeSlots = (Objects.isNull(disciplina.timeSlotsPossiveis) 
-                                    || disciplina.timeSlotsPossiveis.isEmpty())
+                                     || disciplina.timeSlotsPossiveis.isEmpty())
                                     ?this.TimeSlotsTurno(gene.getDisciplina().codigoTurno) 
                                     : new ArrayList<>(disciplina.timeSlotsPossiveis);
         TimeSlot t;
+        List<Sala> s;
+        timeSlots:
         while(!timeSlots.isEmpty()){
-            t = timeSlots.isEmpty()? null : (timeSlots.get(timeSlots.size() > 1? rng.nextInt(timeSlots.size()) : 0));
-            aux = horario[this.mapaCursoPeriodo(gene.getDisciplina())][t.codigo - 1];
-            if(!Objects.isNull(aux)){
-                
-                if(aux.getDisciplina() == gene.getDisciplina()){
-                    
+            t = timeSlots.get(rng.nextInt(timeSlots.size()));
+            if(this.verificaDisponibilidade(disciplina, t)){
+                for(Professor p : disciplina.ProfessoresPodem){
+                    if(this.verificaDispProf(t, p)){
+                        s = SalasPossiveis(t, gene.getTeorica()?disciplina.tipoSalaTeoria : disciplina.tipoSalaPratica);
+                        if(!Objects.isNull(SalasPossiveis(t, gene.getTeorica()?disciplina.tipoSalaTeoria : disciplina.tipoSalaPratica))
+                        &&
+                        !s.isEmpty()){
+                                
+                                gene.setSala(s.get(rng.nextInt(s.size())));
+                                gene.setProfessor(p);
+                                gene.setTimeSlot(t);
+                                this.alocar(gene, t);
+                                GenesNaoAlocados.remove(gene);
+                                
+                                break timeSlots;
+                        }
+                    }
                 }
-                
-                timeSlots.remove(t);
             }
+            timeSlots.remove(t);
         }
         
-        if(!timeSlots.isEmpty()){
-            List<Professor> professoresPodem = new ArrayList<>(gene.getDisciplina().ProfessoresPodem);
-            Professor professor;
-            List<Sala> salas;
-            
-            timeSlots:
-            while(!timeSlots.isEmpty()){
-                t = timeSlots.isEmpty()? null : (timeSlots.get(timeSlots.size() > 1? rng.nextInt(timeSlots.size()) : 0));
-                if(Objects.isNull(t)){
-                    break;
-                }
-                professores:
-                for(int j = 0; j < professoresPodem.size(); j++){
-                    professor = professoresPodem.get(rng.nextInt(professoresPodem.size()));
-                    professoresPodem.remove(professor);
-                    j--;
-                    
-                    if(this.verificaDispProf(t, professor)
-                     &&
-                     this.verificaDisponibilidade(gene.getDisciplina(), t)){
-
-                           salas = this.SalasPossiveis(t, gene.getTeorica()? gene.getDisciplina().tipoSalaTeoria : gene.getDisciplina().tipoSalaPratica);
-
-                           if(!Objects.isNull(salas) && !salas.isEmpty()){
-                               
-                               gene.setSala(salas.get(rng.nextInt(salas.size())));
-                               
-                               this.alocar(gene, t);
-
-                               break professores;
-                           }
-                    }
-                    
-                }
-                timeSlots.remove(t);
-            }
-        }
+        
     }
     
     private int[] corrigeConflitoTimeSlot(List<Gene> genes){
@@ -1191,7 +1264,7 @@ public class Individuo {
     
     
     
-    private int verificaLacunasVazias(Gene[] coluna ) {
+    public int verificaLacunasVazias(Gene[] coluna ) {
         if(Objects.isNull(coluna)){
             return ld.qtdTimeSlots;
         }
@@ -1355,8 +1428,63 @@ public class Individuo {
     }
     
     private void DesmatriculaAluno(Estudante e){
-        
-        
+        List<List<Gene>> aux = new ArrayList<>();
+        for(List<Gene> l : this.listaGenesComRestricao){
+            if(e.disciplinasACursar.contains(l.get(0).getDisciplina())){
+                for(Gene g : l){
+                    if(g.getEstudantes().contains(e)){
+                        aux.add(l);
+                        break;
+                    }
+                }
+            }
+        }
+        for(List<Gene> l : this.listaGenesSemRestricao){
+            if(e.disciplinasACursar.contains(l.get(0).getDisciplina())){
+                for(Gene g : l){
+                    if(g.getEstudantes().contains(e)){
+                        aux.add(l);
+                        break;
+                    }
+                }
+            }
+        }
+        int numDisciplinasMatriculadas = aux.size();
+        i:
+        for(int i = 0; i < numDisciplinasMatriculadas - 2;i++){
+            j:
+            for(int j = 1; j < numDisciplinasMatriculadas - 1;j++){
+                
+                for(Gene g : aux.get(i)){
+                    
+                    for(Gene h : aux.get(j)){
+                        
+                        if(h.getTimeSlot() == g.getTimeSlot()){
+                            
+                            if(rng.nextBoolean()){
+                                
+                                g.getEstudantes().remove(e);
+                                aux.remove(i);
+                                i--;
+                                
+                            }else{
+                                h.getEstudantes().remove(e);
+                                aux.remove(j);
+                                
+                            }
+                            
+                            j--;
+                            numDisciplinasMatriculadas--;
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+            
+            
+        }
         
     }
     
