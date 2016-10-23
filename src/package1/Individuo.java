@@ -1488,7 +1488,30 @@ public class Individuo {
         
     }
     
-    
+    public Individuo mutacao (Individuo individuo){
+        Gene gene = null;
+        int linha = 0;
+        int coluna = 0;
+        int linha2 =0;
+        int coluna2 =0;
+        
+        
+        // pegar um gene aleatorio
+        while(gene == null){ 
+            linha = rng.nextInt(ld.qtdPeriodos);
+            coluna = rng.nextInt(ld.qtdTimeSlots);
+            gene = individuo.horario[linha][coluna];
+        }
+        //procurar um lugar aleratorio
+       
+        while(horario[linha2][coluna2] != null){
+            linha2 = rng.nextInt(ld.qtdPeriodos);
+            coluna2 = rng.nextInt(ld.qtdTimeSlots);
+        }
+        individuo.horario[linha][coluna] = null;
+        individuo.horario[linha2][coluna2] = gene;
+        return individuo;
+    }
     
     
 }
