@@ -113,6 +113,15 @@ public class Gene {
         this.teorica = gene.teorica;
     }
     
+    public Gene(Gene gene,boolean qualquerCoisa){ // Sem copiar a lista de genes
+        this.professor = gene.professor;
+        this.disciplina = gene.disciplina;
+        this.timeSlot = gene.timeSlot;
+        this.estudantes = new ArrayList<>(gene.estudantes);
+        this.qtdEstudantes = gene.qtdEstudantes;
+        this.sala = gene.sala;
+        this.teorica = gene.teorica;
+    }
     
     
     
