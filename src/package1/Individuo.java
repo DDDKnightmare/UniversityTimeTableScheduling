@@ -263,7 +263,8 @@ public class Individuo {
     }
     
     public void mutacao (){
-         Gene gene = null;
+        if(rng.nextBoolean()){// trocar o horário de uma disciplina aleatória.
+            Gene gene = null;
          int linha = 0;
          int coluna = 0;
          int linha2 =0;
@@ -286,6 +287,13 @@ public class Individuo {
          this.horario[linha2][coluna2] = gene;
          
          this.funcaoFitness();
+        }else{// alocar uma disciplina não alocada (se causar conflitos, remover os conflitos.)
+            
+            
+            
+            
+        }
+         
          
      }
     

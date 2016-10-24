@@ -208,8 +208,6 @@ public class Arvore {
     
     private static void trocaColunas(Individuo individuo1, Individuo individuo2, List<Integer> colunas){
         
-        List<Gene> genes1 = new ArrayList<>();
-        List<Gene> genes2 = new ArrayList<>();
         List<List<Gene>> aux1 = new ArrayList<>();
         List<List<Gene>> aux2 = new ArrayList<>();
         for(Integer i : colunas){
@@ -217,37 +215,36 @@ public class Arvore {
             for(int j = 0; j < LeitorDadosEntrada.leitor.qtdTimeSlots;j++){
                 
                 if(!Objects.isNull(individuo1.horario[i][j])){
-                    genes1.add(individuo1.horario[i][j]);
-                    individuo1.horario[i][j] = null;
-                    if(!aux1.contains(genes1.get(genes1.size()-1).getGenes())){
-                        aux1.add(new ArrayList<>(genes1.get(genes1.size()-1).getGenes()));
-                        if(individuo1.getGenesComRestricao().contains(genes1.get(genes1.size()-1).getGenes())){
-                            individuo1.getGenesComRestricao().remove(genes1.get(genes1.size()-1).getGenes());
-                        }else{
-                            individuo1.getGenesSemRestricao().remove(genes1.get(genes1.size()-1).getGenes());
-                        }
+                    if(!Objects.isNull(individuo1.horario[i][j].getGenes())
+                            &&
+                       !individuo1.horario[i][j].getGenes().isEmpty()
+                            &&
+                       !aux1.contains(individuo1.horario[i][j].getGenes())){
+                        
+                            aux1.add(individuo1.horario[i][j].getGenes());
+                            
+                            
                     }
-                    
+                    individuo1.horario[i][j] = null;
                 }
                 
                 if(!Objects.isNull(individuo2.horario[i][j])){
-                    genes2.add(individuo2.horario[i][j]);
-                    individuo2.horario[i][j] = null;
-                    if(!aux2.contains(genes2.get(genes2.size()-1).getGenes())){
-                        aux2.add(genes2.get(genes2.size()-1).getGenes());
-                        if(individuo2.getGenesComRestricao().contains(genes2.get(genes2.size()-1).getGenes())){
-                            individuo2.getGenesComRestricao().remove(genes2.get(genes2.size()-1).getGenes());
-                        }else{
-                            individuo2.getGenesSemRestricao().remove(genes2.get(genes2.size()-1).getGenes());
-                        }
+                    if(!Objects.isNull(individuo2.horario[i][j].getGenes())
+                            &&
+                       !individuo2.horario[i][j].getGenes().isEmpty()
+                            &&
+                       !aux2.contains(individuo2.horario[i][j].getGenes())){
+                        
+                            aux2.add(individuo2.horario[i][j].getGenes());
+                            
+                            
                     }
-                    
+                    individuo2.horario[i][j] = null;
                 }
                 
             }
             
-            substituiListas(individuo1,individuo2,aux1);
-            substituiListas(individuo2,individuo1,aux2);
+            substituiListas(individuo1,individuo2,aux1,aux2);
             
         }
     }
@@ -257,11 +254,11 @@ public class Arvore {
      * @param individuo2  Destino
      * @param genes       Lista de Listas de genes
      */
-    private static void substituiListas(Individuo individuo1, Individuo individuo2, List<List<Gene>> genes){
+    private static void substituiListas(Individuo individuo1, Individuo individuo2, List<List<Gene>> genes1, List<List<Gene>> genes2){
         
-        for(List<Gene> l : genes){
+        for(List<Gene> l : genes1){
                 Disciplina d = l.get(0).getDisciplina();
-                if(Objects.isNull(l.get(0).getDisciplina().timeSlotsPossiveis) 
+                if(Objects.isNull(l.get(0).getDisciplina().timeSlotsPossiveis)
                         || 
                    l.get(0).getDisciplina().timeSlotsPossiveis.isEmpty()){
                     for(List<Gene> k : individuo2.getGenesSemRestricao()){
