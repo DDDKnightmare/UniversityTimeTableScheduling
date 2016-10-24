@@ -293,7 +293,7 @@ public class Individuo {
      }
     
      public void mutacao2 (){// trocar o horário de uma disciplina aleatória.
-        
+         List<Gene> aux = new ArrayList<>();
          Gene gene = null;
          int linha = 0;
          int coluna = 0;
@@ -342,6 +342,7 @@ public class Individuo {
                                 
                         }
                     }
+                 }
                     
                     while(horario[mapaCursoPeriodo(gene.getDisciplina())][t.codigo -1] != gene 
                             &&
@@ -356,6 +357,7 @@ public class Individuo {
                                         )
                                     ){
                                 GenesNaoAlocados.add(horario[i][t.codigo-1]);
+                                aux.add(horario[i][t.codigo-1]);
                                 horario[i][t.codigo-1] = null;
                             }
                         }
@@ -366,16 +368,17 @@ public class Individuo {
                         gene.setSala(sala);
                         MatriculaAlunos(gene);
                         
+                        for(Gene g: aux){
+                            AlocaGeneImcompletos(g);
+                            MatriculaAlunos(g);
+                            CorrigeNumeroDeAlunos(g);
+                        }
                     }
                     
                     MatriculaAlunos(gene);
-                    
-                 }else{
-                     
-                 }
+                    CorrigeNumeroDeAlunos(gene);
+
                  
-                 
-             }
              slotsPossiveis.remove(t);
              t = slotsPossiveis.get(rng.nextInt(slotsPossiveis.size()));
          
