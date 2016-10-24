@@ -302,13 +302,14 @@ public class Individuo {
          List<Professor> professoresPossiveis;
          List<Sala> salasPossiveis;
          Sala sala;
+         Professor p;
          // pegar um gene aleatorio
          while(gene == null){
              linha = rng.nextInt(ld.qtdPeriodos);
              coluna = rng.nextInt(ld.qtdTimeSlots);
              gene = this.horario[linha][coluna];
          }
-         
+         professoresPossiveis = new ArrayList<>(gene.getDisciplina().ProfessoresPodem);
          slotsPossiveis = new ArrayList<>((Objects.isNull(gene.getDisciplina().timeSlotsPossiveis) 
                  || gene.getDisciplina().timeSlotsPossiveis.isEmpty())
                  ? TimeSlotsTurno(gene.getDisciplina().codigoPeriodo) 
@@ -316,12 +317,12 @@ public class Individuo {
          
          //procurar um lugar aleratorio
          
-         professoresPossiveis = new ArrayList<>(gene.getDisciplina().ProfessoresPodem);
+         
          
          t = slotsPossiveis.get(rng.nextInt(slotsPossiveis.size()));
          
          while(horario[mapaCursoPeriodo(gene.getDisciplina())][t.codigo -1] != gene){
-             for(Professor p : professoresPossiveis){
+             p = professoresPossiveis.get(rng.nextInt(professoresPossiveis.size()));
                  if(p.timeSlotsImpossiveis.contains(t)){
                      continue;
                  }
@@ -348,10 +349,22 @@ public class Individuo {
                         
                         sala = salasPossiveis.get(rng.nextInt(salasPossiveis.size()));
                         
-                        //
+                        for(int i = 0; i < ld.qtdPeriodos; i++){
+                            if(!Objects.isNull(horario[i][t.codigo-1]) 
+                                    && (horario[i][t.codigo-1].getSala() == sala 
+                                        || horario[i][t.codigo-1].getProfessor() == p
+                                        )
+                                    ){
+                                GenesNaoAlocados.add(horario[i][t.codigo-1]);
+                                horario[i][t.codigo-1] = null;
+                            }
+                        }
                         
-                        
-                        salasPossiveis.remove(sala);
+                        horario[mapaCursoPeriodo(gene.getDisciplina())][t.codigo-1] = gene;
+                        gene.setTimeSlot(t);
+                        gene.setProfessor(p);
+                        gene.setSala(sala);
+                        MatriculaAlunos(gene);
                         
                     }
                     
