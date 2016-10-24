@@ -1,6 +1,10 @@
 package package1;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 public class LeitorDadosEntrada {
@@ -8,6 +12,8 @@ public class LeitorDadosEntrada {
     static String enderecoArqInfo;
     static String enderecoArqRest;
     
+    public static List<Individuo> Individuos = new ArrayList<>();
+            
     /**
      * Exibe mensagens de erro
      * @param mensagem 
@@ -78,14 +84,21 @@ public class LeitorDadosEntrada {
       }
       
       
-      for(int i = 0; i< numIndividuos;i++){
-          
-        Arvore.addNo(new Individuo(leitor));
-        System.out.println("Fim do indivíduo "+(i+1)+System.getProperty("line.separator"));
+      while(Individuos.size() < numIndividuos){
+          Individuos.add(new Individuo(leitor));
+          System.out.println("Fim do indivíduo "+(Individuos.size())+System.getProperty("line.separator"));
       }
+//      while(Arvore.getNumIndividuos() < numIndividuos){
+//          
+//        Arvore.addNo(new Individuo(leitor));
+//        System.out.println("Fim do indivíduo "+(Arvore.getNumIndividuos())+System.getProperty("line.separator"));
+//      }
       
-      Arvore.imprimeNotas();
-      Individuo melhor = Arvore.getMelhor();
+            //Arvore.imprimeNotas();
+       
+        Collections.sort(Individuos, new ComparadorDeNota());
+                    
+      Individuo melhor = Individuos.get(Individuos.size() -1);
       for(int i = 0; i < leitor.qtdPeriodos; i++){
           for(int j = 0; j < leitor.qtdTimeSlots; j++){
               
@@ -97,18 +110,17 @@ public class LeitorDadosEntrada {
       
       for(contadorGeracoes = 0; contadorGeracoes < numGeracoes; contadorGeracoes ++){
           
-          Arvore.recombinar(taxaRecombinacao, elitismo);
-          
+          recombinar(taxaRecombinacao, elitismo);
+          System.out.println("Recombinação concluída - Geração atual: "+(contadorGeracoes+1));
           
       }
       
-      Arvore.imprimeNotas();
       System.out.println("--------------------------------------------------------------------");
       for(int i = 0; i < leitor.qtdPeriodos; i++){
           for(int j = 0; j < leitor.qtdTimeSlots; j++){
-              
+              if(!Objects.isNull(melhor.horario[i][j]) && !Objects.isNull(melhor.horario[i][j].getTimeSlot()))
               System.out.println("TimeSlot: "+ (j+1) + ";   Período: " + (i+1) + ";  " + (Objects.isNull(melhor.horario[i][j])? "null" : melhor.horario[i][j].toString()));
-              
+//              System.out.println("TimeSlot matriz: "+(j+1)+"  -  timeSlot gene: " + melhor.horario[i][j].getTimeSlot());
           }
       }
       
@@ -120,6 +132,276 @@ public class LeitorDadosEntrada {
     public static void RecebeTexto(String endInfo, String endRest){
         enderecoArqInfo = endInfo;
         enderecoArqRest = endRest;
+    }  
+    
+    
+     public static void recombinar(float porcentagemDaPopulacao, boolean elitismo){
+        int recombinar = (int)(porcentagemDaPopulacao*numIndividuos);
+        if(recombinar < 2 && numIndividuos >= 2){
+            recombinar = 2;
+        }
+        if(recombinar%2 > 0){
+            if(recombinar < numIndividuos){
+                recombinar++;
+            }else{
+                recombinar--;
+            }
+        }
+        
+        List<Individuo> individuos = selecao(recombinar);
+        
+        Individuo elite = null;
+        if(elitismo){
+            elite = new Individuo(Individuos.get(Individuos.size() - 1));
+        }
+        
+        Individuo individuo1;
+        Individuo individuo2;
+        List<Integer> indices = new ArrayList<>();
+        int count;
+        int indice = 0;
+        int interacoes;
+        for(int i = 1; i < recombinar; i+=2){
+          
+            individuo1 = Individuos.get(i);
+            individuo2 = Individuos.get(i-1);
+            //vai trocar pelo menos uma coluna, e deixar pelo menos uma coluna do mesmo jeito
+            count = Individuo.rng.nextInt(LeitorDadosEntrada.leitor.qtdPeriodos - 2) + 1;  
+            interacoes = count * 3;
+            outer:
+            while(count > 0 && interacoes > 0){
+                
+                indice = Individuo.rng.nextInt(LeitorDadosEntrada.leitor.qtdPeriodos);
+                
+                if(!indices.contains(indice)){
+                    
+                    if(individuo1.verificaLacunasVazias(individuo1.horario[indice]) 
+                       < 
+                       individuo2.verificaLacunasVazias(individuo2.horario[indice])){
+                            
+                            indices.add(indice);
+                            
+                    
+                    }
+                    if(!indices.isEmpty()){
+                        count--;
+                    }
+                    
+                    
+                }
+                interacoes--;
+            }
+            
+            if(interacoes <= 0 && count > 0){
+                if(interacoes >= LeitorDadosEntrada.leitor.qtdPeriodos && count > 0){
+                    while(indices.contains(indice)){
+                        indice = Individuo.rng.nextInt(LeitorDadosEntrada.leitor.qtdPeriodos);
+                    }
+                    indices.add(indice);
+                    count--;
+                }
+            }
+            trocaColunas(individuo1, individuo2, indices);
+            List<List<Gene>> aux = new ArrayList<>(individuo1.getGenesComRestricao());
+            aux.addAll(individuo1.getGenesSemRestricao());
+            
+            for(Estudante e: leitor.Estudantes){
+                individuo1.MatricularAluno(e);
+                individuo2.MatricularAluno(e);
+            }
+            
+            
+//            for( List<Gene> l : aux){
+//                for(Gene g : l){
+//                    individuo1.MatriculaAlunos(g);
+//                }
+//            }
+//            aux.clear();
+//            aux.addAll(individuo2.getGenesComRestricao());
+//            aux.addAll(individuo2.getGenesSemRestricao());
+//            for( List<Gene> l : aux){
+//                for(Gene g : l){
+//                    individuo2.MatriculaAlunos(g);
+//                }
+//            }
+            
+            
+            
+            individuo1.funcaoFitness();
+            individuo2.funcaoFitness();
+            indices.clear();
+            
+        }
+        
+        elitismo(elite);
+        
+        
+        
+    }
+
+    private static List<Individuo> selecao(int recombinar) {
+         List<Individuo> IndividuosARecombinar = Individuos.subList(Individuos.size() - recombinar, Individuos.size());
+         
+         return IndividuosARecombinar;
+    }   
+
+    private static void elitismo(Individuo elite){
+        Individuos.sort(new ComparadorDeNota());
+        Individuos.remove(0);
+        Individuos.add(elite);
+        Individuos.sort(new ComparadorDeNota());
     }
     
+    private static void trocaColunas(Individuo individuo1, Individuo individuo2, List<Integer> colunas){
+        
+        List<List<Gene>> aux1 = new ArrayList<>();
+        List<List<Gene>> aux2 = new ArrayList<>();
+        for(Integer i : colunas){
+            
+            for(int j = 0; j < LeitorDadosEntrada.leitor.qtdTimeSlots;j++){
+                
+                if(!Objects.isNull(individuo1.horario[i][j])){
+                    if(!Objects.isNull(individuo1.horario[i][j].getGenes())
+                            &&
+                       !individuo1.horario[i][j].getGenes().isEmpty()
+                            &&
+                       !aux1.contains(individuo1.horario[i][j].getGenes())){
+                        
+                            aux1.add(individuo1.horario[i][j].getGenes());
+                            
+                            
+                    }
+                    individuo1.horario[i][j] = null;
+                }
+                
+                if(!Objects.isNull(individuo2.horario[i][j])){
+                    if(!Objects.isNull(individuo2.horario[i][j].getGenes())
+                            &&
+                       !individuo2.horario[i][j].getGenes().isEmpty()
+                            &&
+                       !aux2.contains(individuo2.horario[i][j].getGenes())){
+                        
+                            aux2.add(individuo2.horario[i][j].getGenes());
+                            
+                            
+                    }
+                    individuo2.horario[i][j] = null;
+                }
+                
+            }
+            
+            substituiListas(individuo1,individuo2,aux1,aux2);
+            
+        }
+        
+        
+    }
+    
+    private static void substituiListas(Individuo individuo1, Individuo individuo2, List<List<Gene>> genes1, List<List<Gene>> genes2){
+        List<List<Gene>> aux = new ArrayList<>();
+        for(List<Gene> l : genes1){
+                Disciplina d = l.get(0).getDisciplina();
+                if(Objects.isNull(l.get(0).getDisciplina().timeSlotsPossiveis)
+                        || 
+                   l.get(0).getDisciplina().timeSlotsPossiveis.isEmpty()){
+                    for(List<Gene> k : individuo2.getGenesSemRestricao()){
+                        if(k.get(0).getDisciplina() == d){
+                            
+                            individuo2.getGenesSemRestricao().set(individuo2.getGenesSemRestricao().indexOf(k), l);
+                            break;
+                        }
+                    }
+                }else{
+                    for(List<Gene> k : individuo2.getGenesComRestricao()){
+                        if(k.get(0).getDisciplina() == d){
+                            
+                            individuo2.getGenesComRestricao().set(individuo2.getGenesComRestricao().indexOf(k), l);
+                            break;
+                        }
+                    }
+                }
+                
+                for(Gene g : l){
+                    if(!Objects.isNull(d.timeSlotsPossiveis) && !d.timeSlotsPossiveis.isEmpty()){
+                        for(List<Gene> o : individuo2.getGenesComRestricao()){
+                            if(o == g.getGenes()){
+                                break;
+                            }
+                            if(o.get(0).getDisciplina() == d){
+                                individuo2.getGenesComRestricao().set(individuo2.getGenesComRestricao().indexOf(o), g.getGenes());
+                                break;
+                            }
+                        }
+                    }else{
+                        for(List<Gene> o : individuo2.getGenesSemRestricao()){
+                            if(o == g.getGenes()){
+                                break;
+                            }
+                            if(o.get(0).getDisciplina() == d){
+                                individuo2.getGenesSemRestricao().set(individuo2.getGenesSemRestricao().indexOf(o), g.getGenes());
+                                break;
+                            }
+                        }
+                    }
+                    if(!Objects.isNull(g.getTimeSlot())){
+                        individuo2.horario[individuo2.mapaCursoPeriodo(d)][g.getTimeSlot().codigo - 1] = g;
+                        individuo2.removerConcorrentes(g);
+                    }
+                }
+                
+            }
+        for(List<Gene> l : genes2){
+                Disciplina d = l.get(0).getDisciplina();
+                if(Objects.isNull(l.get(0).getDisciplina().timeSlotsPossiveis)
+                        || 
+                   l.get(0).getDisciplina().timeSlotsPossiveis.isEmpty()){
+                    for(List<Gene> k : individuo1.getGenesSemRestricao()){
+                        if(k.get(0).getDisciplina() == d){
+                            
+                            individuo1.getGenesSemRestricao().set(individuo1.getGenesSemRestricao().indexOf(k), l);
+                            break;
+                        }
+                    }
+                }else{
+                    for(List<Gene> k : individuo1.getGenesComRestricao()){
+                        if(k.get(0).getDisciplina() == d){
+                            
+                            individuo1.getGenesComRestricao().set(individuo1.getGenesComRestricao().indexOf(k), l);
+                            break;
+                        }
+                    }
+                }
+                
+                for(Gene g : l){
+                    d = g.getDisciplina();
+                    if(!Objects.isNull(d.timeSlotsPossiveis) && !d.timeSlotsPossiveis.isEmpty()){
+                        for(List<Gene> o : individuo1.getGenesComRestricao()){
+                            if(o == g.getGenes()){
+                                break;
+                            }
+                            if(o.get(0).getDisciplina() == d){
+                                individuo1.getGenesComRestricao().set(individuo1.getGenesComRestricao().indexOf(o), g.getGenes());
+                                break;
+                            }
+                        }
+                    }else{
+                        for(List<Gene> o : individuo1.getGenesSemRestricao()){
+                            if(o == g.getGenes()){
+                                break;
+                            }
+                            if(o.get(0).getDisciplina() == d){
+                                individuo1.getGenesSemRestricao().set(individuo1.getGenesSemRestricao().indexOf(o), g.getGenes());
+                                break;
+                            }
+                        }
+                    }
+                    if(!Objects.isNull(g.getTimeSlot())){
+                        individuo1.horario[individuo1.mapaCursoPeriodo(d)][g.getTimeSlot().codigo - 1] = g;
+                        individuo1.removerConcorrentes(g);
+                    }
+                }
+                
+            }
+        }    
 }
+

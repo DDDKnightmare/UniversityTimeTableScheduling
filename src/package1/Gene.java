@@ -81,13 +81,7 @@ public class Gene {
         return teorica;
     }
     
-    public void setNull(){
-        this.professor = null;
-        this.estudantes = null;
-        this.qtdEstudantes = 0;
-        this.sala = null;
-        this.timeSlot = null;
-    }
+    
     
     
     public void setTeorica(boolean teorica){

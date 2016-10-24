@@ -107,7 +107,7 @@ public class Individuo {
     public void setGenesNaoAlocados(List<Gene> GenesNaoAlocados){
         this.GenesNaoAlocados = GenesNaoAlocados;
     }
-    
+   
     public Individuo(LeitorDados ld){
         this.ld = ld;
         int t;
@@ -194,7 +194,7 @@ public class Individuo {
        for(int i = 0; i< this.GenesNaoAlocados.size(); i ++){
            aux = this.GenesNaoAlocados.get(i);
            this.AlocaGeneImcompletos(aux);
-           if(aux != this.GenesNaoAlocados.get(i)){
+           if(i >= this.GenesNaoAlocados.size() || aux != this.GenesNaoAlocados.get(i)){
                 i--;
            }
        }
@@ -236,7 +236,6 @@ public class Individuo {
                 if(aux.getProfessor() == gene.getProfessor()
                    ||
                    aux.getSala() == gene.getSala()){
-                        aux.setNull();
                         GenesNaoAlocados.add(aux);
                 }else{
                     if(!Objects.isNull(gene.getEstudantes()) && !Objects.isNull(aux.getEstudantes())){
@@ -250,15 +249,11 @@ public class Individuo {
             }
         }
         Gene g;
-        int i = 0;
-        while(i < GenesNaoAlocados.size()){
+        int i = GenesNaoAlocados.size()-1;
+        while(i >= 0){
             g = GenesNaoAlocados.get(i);
             this.AlocaGeneImcompletos(g);
-            if(i<GenesNaoAlocados.size()){
-                if(g == GenesNaoAlocados.get(i)){
-                    i++;
-                }
-            }
+            i--;
         }
     }
     
@@ -327,14 +322,14 @@ public class Individuo {
                 for(Professor p : disciplina.ProfessoresPodem){
                     if(this.verificaDispProf(t, p)){
                         s = SalasPossiveis(t, gene.getTeorica()?disciplina.tipoSalaTeoria : disciplina.tipoSalaPratica);
-                        if(!Objects.isNull(SalasPossiveis(t, gene.getTeorica()?disciplina.tipoSalaTeoria : disciplina.tipoSalaPratica))
+                        if(!Objects.isNull(s)
                         &&
                         !s.isEmpty()){
                                 
                                 gene.setSala(s.get(rng.nextInt(s.size())));
                                 gene.setProfessor(p);
                                 gene.setTimeSlot(t);
-                                this.alocar(gene, t);
+                                this.alocar(gene);
                                 GenesNaoAlocados.remove(gene);
                                 
                                 break timeSlots;
@@ -538,10 +533,9 @@ public class Individuo {
      * @return 
      */
     public boolean verificaDisponibilidade(Disciplina disciplina, TimeSlot timeSlot){
-        if(Objects.isNull(horario[this.mapaCursoPeriodo(disciplina)][timeSlot.codigo-1])
-            ||
-          horario[this.mapaCursoPeriodo(disciplina)][timeSlot.codigo-1].getDisciplina() != disciplina)
+        if(Objects.isNull(horario[this.mapaCursoPeriodo(disciplina)][timeSlot.codigo-1])){
             return true;
+        }
         return false;        
     }
     
@@ -599,19 +593,13 @@ public class Individuo {
 
 
             for(int i = 0; i< timeSlots.size(); i++){
-                if(!this.verificaDispProf(timeSlots.get(i), professor)){
+                if(!this.verificaDispProf(timeSlots.get(i), professor)|| !this.verificaDisponibilidade(disciplina, timeSlots.get(i))){
                     timeSlots.remove(i);
                     i--;
                 }
             }
 
-            if(timeSlots.size() >= qtdAulas){
-
-                while(timeSlots.size() > qtdAulas){
-                    timeSlots.remove(rng.nextInt(timeSlots.size()));
-                }
-                return timeSlots;
-            }
+            
             
             return timeSlots.isEmpty()? null : timeSlots;
         }
@@ -622,15 +610,13 @@ public class Individuo {
             List<TimeSlot> timeSlots = new ArrayList<>(TimeSlotsTurno(disciplina.codigoTurno));
             
             for(int i =0;i<timeSlots.size();i++){
-                if(!this.verificaDispProf(timeSlots.get(i), professor) || !this.verificaDisponibilidade(disciplina, timeSlots.get(i))){
+                if(!this.verificaDispProf(timeSlots.get(i), professor)){
                     timeSlots.remove(i);
                     i--;
                 }
             }
             
-            if(timeSlots.size() >= qtdAulas){
-                return timeSlots;
-            }
+            
             return timeSlots.isEmpty()? null : timeSlots;
         }
         
@@ -752,7 +738,6 @@ public class Individuo {
                     }
                 }
         }
-        
         return timeSlots;
     }
     
@@ -840,7 +825,12 @@ public class Individuo {
      * @param gene
      * @return 
      */
-    private boolean MatriculaAlunos(Gene gene){
+    public boolean MatriculaAlunos(Gene gene){
+        
+        if(Objects.isNull(gene.getTimeSlot())){
+            return false;
+        }
+        
         List<Estudante> estudantes = new ArrayList<>(EstudantesParaMatricular(gene.getDisciplina(),ld.Estudantes));
         
         
@@ -1106,13 +1096,14 @@ public class Individuo {
                 * verificando disponibilidade
                 */
                 aux = salas.get(i);
-                
-                outraSala: // Label for the timeSlots loop
+                Sala sala;
                 for(int k = 0; k < ld.qtdPeriodos; k++){
+                    
                     if(!Objects.isNull(horario[k][timeSlot.codigo -1])
-                        && !Objects.isNull(horario[k][timeSlot.codigo -1].getSala())){
+                        && !Objects.isNull(horario[k][timeSlot.codigo -1].getSala())
+                        && horario[k][timeSlot.codigo -1].getSala() == aux){
 
-                        salas.remove(i);
+                        salas.remove(horario[k][timeSlot.codigo -1].getSala());
                         i--;
                         break;
                     }
@@ -1137,7 +1128,7 @@ public class Individuo {
         
         
             for(int j =0; j < ld.qtdPeriodos; j++){
-                if(!Objects.isNull(horario[j][timeSlot.codigo - 1]) && horario[j][timeSlot.codigo - 1].getEstudantes().contains(estudante)){
+                if(!Objects.isNull(horario[j][timeSlot.codigo - 1]) && !Objects.isNull(horario[j][timeSlot.codigo - 1].getEstudantes()) && horario[j][timeSlot.codigo - 1].getEstudantes().contains(estudante)){
                     
                     if(horario[j][timeSlot.codigo - 1].getDisciplina() != d){
                         return false;
@@ -1180,8 +1171,15 @@ public class Individuo {
                     t = timeSlots.isEmpty()? null : timeSlots.get(timeSlots.size() > 0 ? rng.nextInt(timeSlots.size()) : 0);
                     while(!aux.isEmpty()){
                         j = aux.isEmpty()? null : aux.get(aux.size() > 1 ? rng.nextInt(aux.size()) : 0);    
-                        if(Objects.isNull(j) || Objects.isNull(t)){
-                            break timeSlots;
+                        if(Objects.isNull(j)){
+                            timeSlots.remove(t);
+                            continue timeSlots;
+                            
+                        }
+                        if(Objects.isNull(t)){
+                            aux.remove(j);
+                            continue timeSlots;
+
                         }
                         salas = this.SalasPossiveis(t, j.getTeorica()? disciplina.tipoSalaTeoria : disciplina.tipoSalaPratica);
                         if(Objects.isNull(salas) || salas.isEmpty()){
@@ -1191,12 +1189,15 @@ public class Individuo {
                             j.setTimeSlot(t);
                             j.setSala(salas.get(salas.size()>1?rng.nextInt(salas.size()): 0));
                             
-                            this.alocar(j, j.getTimeSlot());
+                            this.alocar(j);
                             
-                            timeSlots.remove(t);
+                            
                             aux.remove(j);
                             break;
                         }
+                    }
+                    if(aux.isEmpty()){
+                        break professores;
                     }
                     timeSlots.remove(t);
                 }
@@ -1227,16 +1228,15 @@ public class Individuo {
      * @param gene
      * @param timeSlot
      */
-    public void alocar(Gene gene, TimeSlot timeSlot){
+    public void alocar(Gene gene){
         
-        if(Objects.isNull(horario[this.mapaCursoPeriodo(gene.getDisciplina())][timeSlot.codigo - 1])){
-            horario[this.mapaCursoPeriodo(gene.getDisciplina())][timeSlot.codigo - 1] = gene;
+        if(Objects.isNull(horario[this.mapaCursoPeriodo(gene.getDisciplina())][gene.getTimeSlot().codigo - 1])){
+            horario[this.mapaCursoPeriodo(gene.getDisciplina())][gene.getTimeSlot().codigo - 1] = gene;
         }else{
-            if(horario[this.mapaCursoPeriodo(gene.getDisciplina())][timeSlot.codigo - 1] != gene){
-                if(this.GenesNaoAlocados.contains(gene)){
+            if(horario[this.mapaCursoPeriodo(gene.getDisciplina())][gene.getTimeSlot().codigo - 1] != gene){
+                if(!this.GenesNaoAlocados.contains(gene)){
                     this.GenesNaoAlocados.add(gene);
                 }
-                gene.setNull();
             }
         }
     }
@@ -1379,7 +1379,7 @@ public class Individuo {
         return retorno;
        }
     
-    private void MatricularAluno(Estudante e){
+    public void MatricularAluno(Estudante e){
        int disciplinasCursadas;
        int capacidadeSala = -1;
        List<TimeSlot> timeSlots = new ArrayList<>(ld.TimeSlots);
@@ -1417,6 +1417,9 @@ public class Individuo {
                                 }
                             }
                             for(Gene g : gene.getGenes()){
+                                
+                                
+                                
                                 if(g.getEstudantes().contains(e)){
                                     disciplinasCursadas++;
                                     break;
@@ -1498,4 +1501,7 @@ public class Individuo {
         
     }
     
+     public String toString(){
+        return ""+this.nota;
+    }
 }
