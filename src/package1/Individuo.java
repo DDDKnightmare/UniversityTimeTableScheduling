@@ -270,11 +270,11 @@ public class Individuo {
          while(gene == null){
              linha = rng.nextInt(ld.qtdPeriodos);
              coluna = rng.nextInt(ld.qtdTimeSlots);
-             gene = this.horario[linha][coluna];
+             gene = this.horario[coluna][linha];
          }
          //procurar um lugar aleratorio
         
-         while(horario[linha2][coluna2] != null){
+         while(horario[coluna2][linha2] != null){
              linha2 = rng.nextInt(ld.qtdPeriodos);
              coluna2 = rng.nextInt(ld.qtdTimeSlots);
          }
@@ -299,7 +299,9 @@ public class Individuo {
          int coluna = 0;
          List<TimeSlot> slotsPossiveis;
          TimeSlot t;
-         
+         List<Professor> professoresPossiveis;
+         List<Sala> salasPossiveis;
+         Sala sala;
          // pegar um gene aleatorio
          while(gene == null){
              linha = rng.nextInt(ld.qtdPeriodos);
@@ -307,13 +309,63 @@ public class Individuo {
              gene = this.horario[linha][coluna];
          }
          
-         slotsPossiveis = TimeSlotsTurno(gene.getDisciplina().codigoPeriodo);
+         slotsPossiveis = new ArrayList<>((Objects.isNull(gene.getDisciplina().timeSlotsPossiveis) 
+                 || gene.getDisciplina().timeSlotsPossiveis.isEmpty())
+                 ? TimeSlotsTurno(gene.getDisciplina().codigoPeriodo) 
+                 : gene.getDisciplina().timeSlotsPossiveis);
          
          //procurar um lugar aleratorio
+         
+         professoresPossiveis = new ArrayList<>(gene.getDisciplina().ProfessoresPodem);
+         
          t = slotsPossiveis.get(rng.nextInt(slotsPossiveis.size()));
          
-         while(horario[mapaCursoPeriodo(gene.getDisciplina())][t.codigo -1] != null){
+         while(horario[mapaCursoPeriodo(gene.getDisciplina())][t.codigo -1] != gene){
+             for(Professor p : professoresPossiveis){
+                 if(p.timeSlotsImpossiveis.contains(t)){
+                     continue;
+                 }
+                 
+                 salasPossiveis = SalasPossiveis(t, gene.getTeorica()
+                         ? gene.getDisciplina().tipoSalaTeoria 
+                         : gene.getDisciplina().tipoSalaPratica);
+                 
+                 if(Objects.isNull(salasPossiveis) || salasPossiveis.isEmpty()){
+                    salasPossiveis = new ArrayList<>();
+                    for(Sala s : ld.Salas){
+                        if(s.tipoDeSala == (gene.getTeorica()
+                            ? gene.getDisciplina().tipoSalaTeoria 
+                            : gene.getDisciplina().tipoSalaPratica)){
+                                
+                                salasPossiveis.add(s);
+                                
+                        }
+                    }
+                    
+                    while(horario[mapaCursoPeriodo(gene.getDisciplina())][t.codigo -1] != gene 
+                            &&
+                          !salasPossiveis.isEmpty()){
+                        
+                        sala = salasPossiveis.get(rng.nextInt(salasPossiveis.size()));
+                        
+                        //
+                        
+                        
+                        salasPossiveis.remove(sala);
+                        
+                    }
+                    
+                    MatriculaAlunos(gene);
+                    
+                 }else{
+                     
+                 }
+                 
+                 
+             }
+             slotsPossiveis.remove(t);
              t = slotsPossiveis.get(rng.nextInt(slotsPossiveis.size()));
+         
          }
              
          this.horario[linha][coluna] = null;
