@@ -19,7 +19,7 @@ public class Individuo {
     
 //  Fim RNG    
       
-    public Gene[][] horario;  // Matriz [timeSlot][mapeamento(Curso,Periodo)]
+    public Gene[][] horario;  // Matriz [mapeamento(Curso,Periodo)][timeSlot]
     
     private List<List<Gene>> listaGenesComRestricao;
     private List<List<Gene>> listaGenesSemRestricao;
@@ -291,6 +291,37 @@ public class Individuo {
          
          
      }
+    
+     public void mutacao2 (){// trocar o horário de uma disciplina aleatória.
+        
+         Gene gene = null;
+         int linha = 0;
+         int coluna = 0;
+         List<TimeSlot> slotsPossiveis;
+         TimeSlot t;
+         
+         // pegar um gene aleatorio
+         while(gene == null){
+             linha = rng.nextInt(ld.qtdPeriodos);
+             coluna = rng.nextInt(ld.qtdTimeSlots);
+             gene = this.horario[linha][coluna];
+         }
+         
+         slotsPossiveis = TimeSlotsTurno(gene.getDisciplina().codigoPeriodo);
+         
+         //procurar um lugar aleratorio
+         t = slotsPossiveis.get(rng.nextInt(slotsPossiveis.size()));
+         
+         while(horario[mapaCursoPeriodo(gene.getDisciplina())][t.codigo -1] != null){
+             t = slotsPossiveis.get(rng.nextInt(slotsPossiveis.size()));
+         }
+             
+         this.horario[linha][coluna] = null;
+         this.horario[t.codigo -1][mapaCursoPeriodo(gene.getDisciplina())] = gene;
+         
+         this.funcaoFitness();
+        }
+    
     
    
     
