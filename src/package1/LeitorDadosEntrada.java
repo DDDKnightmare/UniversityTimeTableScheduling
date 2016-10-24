@@ -85,7 +85,9 @@ public class LeitorDadosEntrada {
       
       
       while(Individuos.size() < numIndividuos){
-          Individuos.add(new Individuo(leitor));
+          Individuo i = new Individuo(leitor);
+          i.horarioPrint();
+          Individuos.add(i);
           System.out.println("Fim do indivíduo "+(Individuos.size())+System.getProperty("line.separator"));
       }
 //      while(Arvore.getNumIndividuos() < numIndividuos){

@@ -1535,4 +1535,39 @@ public class Individuo {
      public String toString(){
         return ""+this.nota;
     }
+     
+    public void horarioPrint(){
+        int cont = 23;
+        
+        System.out.print("         ");
+        for(int i = 0; i<32; i++){
+            if(i<9)
+                System.out.print("|p"+(i+1)+"  ");
+            
+            else
+                System.out.print("|p"+(i+1)+" ");
+        }
+        System.out.print("\n");
+        for(int i = 23; i< 168; i++){
+            if(cont<100)
+                System.out.print("slot  "+ cont +":");
+            else
+                System.out.print("slot "+ cont +":");
+            for(int j = 0; j< 32; j++){
+                if(horario[j][i] == null){
+                    
+                    System.out.print("|    ");
+                }
+                else{
+                    if(horario[j][i].getDisciplina().codigo <1000)
+                        System.out.print("|"+horario[j][i].getDisciplina().codigo + " ");
+                    else
+                        System.out.print("|"+horario[j][i].getDisciplina().codigo);
+                }
+                
+            }
+            cont = cont+1;
+            System.out.println("");
+        }
+    }
 }
