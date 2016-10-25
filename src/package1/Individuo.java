@@ -218,7 +218,7 @@ public class Individuo {
            this.MatricularAluno(e);
        }
        
-       this.nota = this.funcaoFitness();
+       this.funcaoFitness();
     }
     
     
@@ -1353,15 +1353,15 @@ outroGene:
         return false;
     }
     
-    public int funcaoFitness () {
+    public void funcaoFitness () {
        int nota = 9500;
-       
-       int pesoLacunasVazias  = 1;
-       int pesoAlunosNaoMatriculados = 1;
-       int pesoAlunosParcialmenteMatriculados = 1;
-       int pesoDisciplinasParcialmenteAlocadas = 1;
-       int pesoProfessorOscioso = 1;
-       int pesoMateriaNaoAlocada = 1; 
+       int[] pesos = LeitorDadosEntrada.getPesos();
+       int pesoLacunasVazias  = pesos[0];
+       int pesoAlunosNaoMatriculados = pesos[1];
+       int pesoAlunosParcialmenteMatriculados = pesos[2];
+       int pesoDisciplinasParcialmenteAlocadas = pesos[3];
+       int pesoProfessorOscioso = pesos[4];
+       int pesoMateriaNaoAlocada = pesos[5]; 
        int lacunasVazias = 0;
        for(int i = 0; i<ld.qtdPeriodos;i++){
            lacunasVazias += verificaLacunasVazias(this.horario[i]);
@@ -1379,7 +1379,7 @@ outroGene:
                - pesoMateriaNaoAlocada*materiasNaoAlocadas[0]; 
  
        
-       return nota;
+       this.nota = nota;
    
    }
     
@@ -1484,8 +1484,9 @@ outroGene:
                 retorno[0] ++;
             }else{
                 retorno[1]+= aux;
-                retorno[1] = 0;
             }
+                aux = 0;
+            
         }
         
         return retorno;

@@ -37,7 +37,16 @@ public class LeitorDadosEntrada {
     private static String elite;
     public static Scanner entrada = new Scanner(System.in);
     private static float taxaMutacao = 0;
+    private static int melhorNotaInicial;
+    private static int[] pesos = {1,1,1,1,1,1};
     
+    
+    public static int[] getPesos(){
+        return pesos;
+    }
+    public static void setPesos(int[] pesos){
+        LeitorDadosEntrada.pesos = pesos;
+    }
     public static LeitorDados leitor = new LeitorDados();
     
     public static void main(String[] args) throws IOException {
@@ -117,6 +126,7 @@ public class LeitorDadosEntrada {
         Collections.sort(Individuos, new ComparadorDeNota());
                     
       Individuo melhor = Individuos.get(Individuos.size() -1);
+      melhorNotaInicial = melhor.getNota();
       for(int i = 0; i < leitor.qtdPeriodos; i++){
           for(int j = 0; j < leitor.qtdTimeSlots; j++){
               
@@ -151,6 +161,7 @@ public class LeitorDadosEntrada {
       
       
       melhor.horarioPrint();
+      System.out.println("\n"+melhorNotaInicial);
       System.out.println("\n"+melhor.getNota());
       
     }
