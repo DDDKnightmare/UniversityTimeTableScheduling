@@ -39,7 +39,16 @@ public class LeitorDadosEntrada {
     private static float taxaMutacao = 0;
     private static int melhorNotaInicial;
     private static int[] pesos = {1,1,1,1,1,1};
+    private static int notaInicial = 9500;
     
+    
+    public static int getNotaInicial(){
+        return notaInicial;
+    }
+    
+    public static void setNotaInicial(int nota){
+        notaInicial = nota;
+    }
     
     public static int[] getPesos(){
         return pesos;
