@@ -22,6 +22,12 @@ public class LeitorDadosEntrada {
         System.out.println(mensagem);
     }
     
+    public LeitorDadosEntrada(Object[] entrada){
+        
+    }
+    
+    
+    
     private static int numGeracoes = 0;
     private static int contadorGeracoes;
     private static int numIndividuos = 0;
@@ -30,6 +36,7 @@ public class LeitorDadosEntrada {
     private static boolean accept = false;
     private static String elite;
     public static Scanner entrada = new Scanner(System.in);
+    private static float taxaMutacao = 0;
     
     public static LeitorDados leitor = new LeitorDados();
     
@@ -57,6 +64,15 @@ public class LeitorDadosEntrada {
           elite = elite.replace(" ", "").replace(",", ".").replaceAll("[\\D && [^\\.]]", "");
           taxaRecombinacao = Float.parseFloat(elite) / 100;
       }
+      
+      while(taxaMutacao <= 0.0){
+          System.out.println("Digite a taxa de mutação desejada(%)");
+          elite = entrada.next();
+          elite = elite.replace(" ", "").replace(",", ".").replaceAll("[\\D && [^\\.]]", "");
+          taxaMutacao = Float.parseFloat(elite) / 100;
+      }
+      
+      
       elite = "";
       while(!accept){
           
@@ -104,8 +120,6 @@ public class LeitorDadosEntrada {
       for(int i = 0; i < leitor.qtdPeriodos; i++){
           for(int j = 0; j < leitor.qtdTimeSlots; j++){
               
-              System.out.println("TimeSlot: "+ (j+1) + ";   Período: " + (i+1) + ";  " + (Objects.isNull(melhor.horario[i][j])? "null" : melhor.horario[i][j].toString()));
-              
           }
       }
       System.out.println("Iníncio algoritmo   -   População : "+numIndividuos + "   -   Número de gerações : "+numGeracoes);
@@ -114,21 +128,32 @@ public class LeitorDadosEntrada {
           
           recombinar(taxaRecombinacao, elitismo);
           System.out.println("Recombinação concluída - Geração atual: "+(contadorGeracoes+1));
+          if(Individuo.rng.nextFloat() < taxaMutacao){
+              int mutar = (int)(Individuo.rng.nextFloat()*numIndividuos*taxaMutacao);
+              mutar = mutar > 0? mutar : 1;
+              List<Individuo> aux = new ArrayList<>(Individuos);
+              int indice;
+              while(mutar > 0){
+                  indice = Individuo.rng.nextInt(aux.size());
+                  aux.get(indice).mutacao();
+                  aux.remove(indice);
+                  mutar--;
+                  System.out.println("Mutação concluída - Restam "+mutar);
+                  Individuos.sort(new ComparadorDeNota());
+                  
+              }
+          }
+          
           
       }
-      
+      melhor = Individuos.get(Individuos.size()-1);
       System.out.println("--------------------------------------------------------------------");
-      for(int i = 0; i < leitor.qtdPeriodos; i++){
-          for(int j = 0; j < leitor.qtdTimeSlots; j++){
-              if(!Objects.isNull(melhor.horario[i][j]) && !Objects.isNull(melhor.horario[i][j].getTimeSlot()))
-              System.out.println("TimeSlot: "+ (j+1) + ";   Período: " + (i+1) + ";  " + (Objects.isNull(melhor.horario[i][j])? "null" : melhor.horario[i][j].toString()));
-//              System.out.println("TimeSlot matriz: "+(j+1)+"  -  timeSlot gene: " + melhor.horario[i][j].getTimeSlot());
-          }
-      }
+      
+      
+      melhor.horarioPrint();
+      System.out.println("\n"+melhor.getNota());
       
     }
-    
-    
     //metodo para receber o endereço dos arquivos
     
     public static void RecebeTexto(String endInfo, String endRest){
@@ -150,8 +175,6 @@ public class LeitorDadosEntrada {
             }
         }
         
-        List<Individuo> individuos = selecao(recombinar);
-        
         Individuo elite = null;
         if(elitismo){
             elite = new Individuo(Individuos.get(Individuos.size() - 1));
@@ -163,7 +186,7 @@ public class LeitorDadosEntrada {
         int count;
         int indice = 0;
         int interacoes;
-        for(int i = 1; i < recombinar; i+=2){
+        for(int i = LeitorDadosEntrada.Individuos.size()-1; i >0; i-=2){
           
             individuo1 = Individuos.get(i);
             individuo2 = Individuos.get(i-1);
@@ -204,38 +227,16 @@ public class LeitorDadosEntrada {
                 }
             }
             trocaColunas(individuo1, individuo2, indices);
-            List<List<Gene>> aux = new ArrayList<>(individuo1.getGenesComRestricao());
-            aux.addAll(individuo1.getGenesSemRestricao());
-            
-            for(Estudante e: leitor.Estudantes){
-                individuo1.MatricularAluno(e);
-                individuo2.MatricularAluno(e);
-            }
-            
-            
-//            for( List<Gene> l : aux){
-//                for(Gene g : l){
-//                    individuo1.MatriculaAlunos(g);
-//                }
-//            }
-//            aux.clear();
-//            aux.addAll(individuo2.getGenesComRestricao());
-//            aux.addAll(individuo2.getGenesSemRestricao());
-//            for( List<Gene> l : aux){
-//                for(Gene g : l){
-//                    individuo2.MatriculaAlunos(g);
-//                }
-//            }
-            
-            
-            
+                        
             individuo1.funcaoFitness();
             individuo2.funcaoFitness();
             indices.clear();
             
         }
+        if(elitismo){
+            elitismo(elite);
+        }
         
-        elitismo(elite);
         
         
         
