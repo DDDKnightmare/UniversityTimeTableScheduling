@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.ArrayList;
+import java.io.*;
 /**
  *
  * @author guilhermeferreira
@@ -1616,6 +1617,53 @@ outroGene:
      public String toString(){
         return ""+this.nota;
     }
+    
+     
+     public void toCsv() throws IOException{
+        StringBuilder strBuilder = new StringBuilder();
+        for(int periodo = 0; periodo < ld.qtdPeriodos; periodo++){
+            for(int timeSlot = 0; timeSlot < ld.qtdTimeSlots; timeSlot++){
+                if(!Objects.isNull(horario[periodo][timeSlot])){
+                    AddGene(horario[periodo][timeSlot], strBuilder);
+                }
+                    
+            }
+        }        
+        GeraArquivo(strBuilder);  
+    }
+
+    private void AddGene(Gene gene, StringBuilder strBuilder) throws FileNotFoundException, IOException {
+        
+        strBuilder.append(gene.getDisciplina().curso.nome).append(", ");
+        strBuilder.append(gene.getTimeSlot().codigo).append(", ");
+        strBuilder.append(gene.getDisciplina().descricao).append(", ");
+        strBuilder.append(gene.getProfessor().nome).append(", ");
+        strBuilder.append(gene.getSala().descricao).append(", ");
+        
+        if(gene.getEstudantes() != null && !gene.getEstudantes().isEmpty()){
+            for(int e = 0; e < gene.getEstudantes().size() - 1; e++)                
+                strBuilder.append(gene.getEstudantes().get(e).nome).append(", ");
+            strBuilder.append(gene.getEstudantes().get(gene.getEstudantes().size()-1).nome); // O ultimo não tem virgula                
+        }
+//        else{
+//            strBuilder.deleteCharAt(strBuilder.lastIndexOf(","));
+//        }
+        
+        strBuilder.append(System.getProperty("line.separator"));
+    }
+
+    private void GeraArquivo(StringBuilder strBuilder) throws FileNotFoundException, IOException {
+        
+       OutputStream os = new FileOutputStream(ld.saida+(ld.saida.endsWith(".csv")?"":".csv"));
+       OutputStreamWriter osw = new OutputStreamWriter(os);
+       BufferedWriter bw = new BufferedWriter(osw);
+ 
+     bw.write(strBuilder.toString());
+     
+     bw.close();
+     LeitorDadosEntrada.tp.escreve(System.getProperty("line.separator")+"Arquivo salvo em  "+ld.saida);
+    }    
+     
      
     public void horarioPrint(){
         

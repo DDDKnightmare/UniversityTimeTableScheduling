@@ -46,12 +46,14 @@ public class LeitorDadosEntrada {
         leitor.peso4 = new Integer(Integer.parseInt(dadosUsu[12].toString()));
         leitor.peso5 = new Integer(Integer.parseInt(dadosUsu[13].toString()));
         
-        System.out.println(peso1);
-        System.out.println(peso2);
-        System.out.println(peso3);
-        System.out.println(peso4);
-        System.out.println(peso5);
+//        System.out.println(peso1);
+//        System.out.println(peso2);
+//        System.out.println(peso3);
+//        System.out.println(peso4);
+//        System.out.println(peso5);
+        leitor.saida = (String)dadosUsu[2];
         
+
         leitor.notaInicial = new Integer(Integer.parseInt(dadosUsu[14].toString()));
         
           this.main(new String[1]);
@@ -230,7 +232,7 @@ public class LeitorDadosEntrada {
       //System.out.println(""+System.getProperty("line.separator")+""+melhor.getNota());
       tp.escreve(""+System.getProperty("line.separator")+""+melhor.getNota());
       
-      
+      melhor.toCsv();
       
     }
    

@@ -12,6 +12,7 @@ import java.util.List;
 
 public class LeitorDados {
     
+    public String saida;
     public List<TimeSlot> TimeSlots; 
     public List<Curso> Cursos; 
     public List<TipoDeSala> TiposDeSala;
