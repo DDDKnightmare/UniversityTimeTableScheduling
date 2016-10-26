@@ -113,7 +113,7 @@ public class LeitorDadosEntrada {
 //        TelaProgresso tp = new TelaProgresso();
             tp.setVisible(true);
             tp.setLocationRelativeTo(null);
-        
+
         
         
               
@@ -233,7 +233,7 @@ public class LeitorDadosEntrada {
       tp.escreve(""+System.getProperty("line.separator")+""+melhor.getNota());
       
       melhor.toCsv();
-      
+      Individuos.clear();
     }
    
     
