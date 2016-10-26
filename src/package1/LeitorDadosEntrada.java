@@ -9,10 +9,10 @@ import java.util.Objects;
 import java.util.Scanner;
 public class LeitorDadosEntrada {
     
-    static String enderecoArqInfo;
-    static String enderecoArqRest;
+     Object[] dadosUsu;
+     TelaProgresso tp = new TelaProgresso();
     
-    public static List<Individuo> Individuos = new ArrayList<>();
+    public  List<Individuo> Individuos = new ArrayList<>();
             
     /**
      * Exibe mensagens de erro
@@ -20,27 +20,52 @@ public class LeitorDadosEntrada {
      */
     
     
-    public static void Erro(String mensagem){
+    public  void Erro(String mensagem){
         System.out.println(mensagem);
     }
     
-    public LeitorDadosEntrada(Object[] entrada){
+    public LeitorDadosEntrada(Object[] entrada) throws IOException{
+        
+        for(Object o : entrada){
+        System.out.println(o.toString());
+            }
+        dadosUsu = entrada;
+        
+        numGeracoes = Integer.parseInt(dadosUsu[4].toString());
+        
+        numIndividuos = Integer.parseInt(dadosUsu[3].toString());
+        taxaRecombinacao = Integer.parseInt(dadosUsu[5].toString());
+        elitismo = (boolean) dadosUsu[7];
+        taxaMutacao = Integer.parseInt(dadosUsu[5].toString());
+        System.out.println(Integer.parseInt(dadosUsu[9].toString()));
+        pesos[0]=Integer.parseInt(dadosUsu[9].toString());
+        
+        pesos[1]=Integer.parseInt(dadosUsu[10].toString());
+        pesos[2]=Integer.parseInt(dadosUsu[11].toString());
+        pesos[3]=Integer.parseInt(dadosUsu[12].toString());
+        pesos[4]=Integer.parseInt(dadosUsu[13].toString());
+
+        
+        notaInicial = Integer.parseInt(dadosUsu[14].toString());
+        
+          this.main(new String[1]);
+        
         
     }
     
     
     
-    private static int numGeracoes = 0;pegar da Interface
-    private static int contadorGeracoes;
-    private static int numIndividuos = 0;pegar da Interface
-    private static float taxaRecombinacao = 0;pegar da Interface
-    private static boolean elitismo;pegar da Interface
-    private static boolean accept = false;
-//    private static String elite;
-//    public static Scanner entrada = new Scanner(System.in);
-    private static float taxaMutacao = 0;pegar da Interface
-    private static int melhorNotaInicial;
-    private static int[] pesos = {2,3,1,5,10};pegar da Interface 
+    public  int numGeracoes;
+    private  int contadorGeracoes;
+    private  int numIndividuos;
+    private  float taxaRecombinacao;
+    private  boolean elitismo;
+    private  boolean accept = false;
+//    private  String elite;
+//    public  Scanner entrada = new Scanner(System.in);
+    private  float taxaMutacao ;
+    private  int melhorNotaInicial;
+    private  int[] pesos;
     /**{
      * pesoLacunasVazias,
      * pesoAlunosParcialmenteMatriculados,
@@ -49,32 +74,36 @@ public class LeitorDadosEntrada {
      * pesoMateriaNaoAlocada
      * }
      */
-    private static int notaInicial = 9500;pegar da Interface
+    private  int notaInicial ;
     
     
-    public static int getNotaInicial(){
+    public  int getNotaInicial(){
         return notaInicial;
     }
     
-    public static void setNotaInicial(int nota){
+    public  void setNotaInicial(int nota){
         notaInicial = nota;
     }
     
-    public static int[] getPesos(){
+    public  int[] getPesos(){
         return pesos;
     }
-    public static void setPesos(int[] pesos){
-        LeitorDadosEntrada.pesos = pesos;
+    public  void setPesos(int[] pesos){
+        this.pesos = pesos;
     }
-    public static LeitorDados leitor = new LeitorDados();
+    public  LeitorDados leitor = new LeitorDados();
     
-    public static void main(String[] args) throws IOException {
+    public  void main(String[] args) throws IOException {
       
+//        TelaProgresso tp = new TelaProgresso();
+            tp.setVisible(true);
+            tp.setLocationRelativeTo(null);
+        
         
         
               
 //      leitor.Executa("ag-informacoes.csv", "ag-restricoes.csv");
-    leitor.Executa(enderecoArqInfo, enderecoArqRest);
+    leitor.Executa(dadosUsu[0].toString(), dadosUsu[1].toString());
       
       
 //      while(numIndividuos <= 1){
@@ -132,7 +161,8 @@ public class LeitorDadosEntrada {
           Individuo i = new Individuo(leitor);
           i.horarioPrint();
           Individuos.add(i);
-          System.out.println("Fim do indivíduo "+(Individuos.size())+System.getProperty("line.separator"));
+          tp.escreve("Fim do indivíduo "+(Individuos.size())+System.getProperty("line.separator"));
+          //System.out.println("Fim do indivíduo "+(Individuos.size())+System.getProperty("line.separator"));
       }
 //      while(Arvore.getNumIndividuos() < numIndividuos){
 //          
@@ -151,12 +181,13 @@ public class LeitorDadosEntrada {
               
           }
       }
-      System.out.println("Iníncio algoritmo   -   População : "+numIndividuos + "   -   Número de gerações : "+numGeracoes);
-      
+      //System.out.println("Iníncio algoritmo   -   População : "+numIndividuos + "   -   Número de gerações : "+numGeracoes);
+      tp.escreve("Iníncio algoritmo   -   População : "+numIndividuos + "   -   Número de gerações : "+numGeracoes);
       for(contadorGeracoes = 0; contadorGeracoes < numGeracoes; contadorGeracoes ++){
           
           recombinar(taxaRecombinacao, elitismo);
-          System.out.println("Recombinação concluída - Geração atual: "+(contadorGeracoes+1));
+          //System.out.println("Recombinação concluída - Geração atual: "+(contadorGeracoes+1));
+          tp.escreve("Recombinação concluída - Geração atual: "+(contadorGeracoes+1));
           if(Individuo.rng.nextFloat() < taxaMutacao){
               int mutar = (int)(Individuo.rng.nextFloat()*numIndividuos*taxaMutacao);
               mutar = mutar > 0? mutar : 1;
@@ -167,7 +198,8 @@ public class LeitorDadosEntrada {
                   aux.get(indice).mutacao();
                   aux.remove(indice);
                   mutar--;
-                  System.out.println("Mutação concluída - Restam "+mutar);
+                  //System.out.println("Mutação concluída - Restam "+mutar);
+                  tp.escreve("Mutação concluída - Restam "+mutar);
                   Individuos.sort(new ComparadorDeNota());
                   
               }
@@ -176,23 +208,20 @@ public class LeitorDadosEntrada {
           
       }
       melhor = Individuos.get(Individuos.size()-1);
-      System.out.println("--------------------------------------------------------------------");
-      
+      //System.out.println("--------------------------------------------------------------------");
+      tp.escreve("--------------------------------------------------------------------");
       
       melhor.horarioPrint();
-      System.out.println("\n"+melhorNotaInicial);
-      System.out.println("\n"+melhor.getNota());
+      //System.out.println("\n"+melhorNotaInicial);
+      tp.escreve("\n"+melhorNotaInicial);
+      //System.out.println("\n"+melhor.getNota());
+      tp.escreve("\n"+melhor.getNota());
       
     }
-    //metodo para receber o endereço dos arquivos
-    
-    public static void RecebeTexto(String endInfo, String endRest){
-        enderecoArqInfo = endInfo;
-        enderecoArqRest = endRest;
-    }  
+   
     
     
-     public static void recombinar(float porcentagemDaPopulacao, boolean elitismo){
+     public  void recombinar(float porcentagemDaPopulacao, boolean elitismo){
         int recombinar = (int)(porcentagemDaPopulacao*numIndividuos);
         if(recombinar < 2 && numIndividuos >= 2){
             recombinar = 2;
@@ -216,17 +245,17 @@ public class LeitorDadosEntrada {
         int count;
         int indice = 0;
         int interacoes;
-        for(int i = LeitorDadosEntrada.Individuos.size()-1; i >0; i-=2){
+        for(int i = this.Individuos.size()-1; i >0; i-=2){
           
             individuo1 = Individuos.get(i);
             individuo2 = Individuos.get(i-1);
             //vai trocar pelo menos uma coluna, e deixar pelo menos uma coluna do mesmo jeito
-            count = Individuo.rng.nextInt(LeitorDadosEntrada.leitor.qtdPeriodos - 2) + 1;  
+            count = Individuo.rng.nextInt(this.leitor.qtdPeriodos - 2) + 1;  
             interacoes = count * 3;
             outer:
             while(count > 0 && interacoes > 0){
                 
-                indice = Individuo.rng.nextInt(LeitorDadosEntrada.leitor.qtdPeriodos);
+                indice = Individuo.rng.nextInt(this.leitor.qtdPeriodos);
                 
                 if(!indices.contains(indice)){
                     
@@ -248,9 +277,9 @@ public class LeitorDadosEntrada {
             }
             
             if(interacoes <= 0 && count > 0){
-                if(interacoes >= LeitorDadosEntrada.leitor.qtdPeriodos && count > 0){
+                if(interacoes >= this.leitor.qtdPeriodos && count > 0){
                     while(indices.contains(indice)){
-                        indice = Individuo.rng.nextInt(LeitorDadosEntrada.leitor.qtdPeriodos);
+                        indice = Individuo.rng.nextInt(this.leitor.qtdPeriodos);
                     }
                     indices.add(indice);
                     count--;
@@ -272,26 +301,26 @@ public class LeitorDadosEntrada {
         
     }
 
-    private static List<Individuo> selecao(int recombinar) {
+    private  List<Individuo> selecao(int recombinar) {
          List<Individuo> IndividuosARecombinar = Individuos.subList(Individuos.size() - recombinar, Individuos.size());
          
          return IndividuosARecombinar;
     }   
 
-    private static void elitismo(Individuo elite){
+    private  void elitismo(Individuo elite){
         Individuos.sort(new ComparadorDeNota());
         Individuos.remove(0);
         Individuos.add(elite);
         Individuos.sort(new ComparadorDeNota());
     }
     
-    private static void trocaColunas(Individuo individuo1, Individuo individuo2, List<Integer> colunas){
+    private  void trocaColunas(Individuo individuo1, Individuo individuo2, List<Integer> colunas){
         
         List<List<Gene>> aux1 = new ArrayList<>();
         List<List<Gene>> aux2 = new ArrayList<>();
         for(Integer i : colunas){
             
-            for(int j = 0; j < LeitorDadosEntrada.leitor.qtdTimeSlots;j++){
+            for(int j = 0; j < this.leitor.qtdTimeSlots;j++){
                 
                 if(!Objects.isNull(individuo1.horario[i][j])){
                     if(!Objects.isNull(individuo1.horario[i][j].getGenes())
@@ -330,7 +359,7 @@ public class LeitorDadosEntrada {
         
     }
     
-    private static void substituiListas(Individuo individuo1, Individuo individuo2, List<List<Gene>> genes1, List<List<Gene>> genes2){
+    private  void substituiListas(Individuo individuo1, Individuo individuo2, List<List<Gene>> genes1, List<List<Gene>> genes2){
         List<List<Gene>> aux = new ArrayList<>();
         for(List<Gene> l : genes1){
                 Disciplina d = l.get(0).getDisciplina();
