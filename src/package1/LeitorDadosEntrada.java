@@ -18,7 +18,7 @@ public class LeitorDadosEntrada {
      * Exibe mensagens de erro
      * @param mensagem 
      */
-    
+    static LeitorDadosEntrada lde;
     
     public  void Erro(String mensagem){
         System.out.println(mensagem);
@@ -40,16 +40,19 @@ public class LeitorDadosEntrada {
 //        System.out.println(Integer.parseInt(dadosUsu[9].toString()));
 
         
-        peso1 = Integer.parseInt(dadosUsu[9].toString());
-        peso2 = Integer.parseInt(dadosUsu[10].toString());
-        peso3 = Integer.parseInt(dadosUsu[11].toString());
-        peso4 = Integer.parseInt(dadosUsu[12].toString());
-        peso5 = Integer.parseInt(dadosUsu[13].toString());
+        leitor.peso1 = new Integer(Integer.parseInt(dadosUsu[9].toString()));
+        leitor.peso2 = new Integer(Integer.parseInt(dadosUsu[10].toString()));
+        leitor.peso3 = new Integer(Integer.parseInt(dadosUsu[11].toString()));
+        leitor.peso4 = new Integer(Integer.parseInt(dadosUsu[12].toString()));
+        leitor.peso5 = new Integer(Integer.parseInt(dadosUsu[13].toString()));
         
+        System.out.println(peso1);
+        System.out.println(peso2);
+        System.out.println(peso3);
+        System.out.println(peso4);
+        System.out.println(peso5);
         
-
-        
-        notaInicial = Integer.parseInt(dadosUsu[14].toString());
+        leitor.notaInicial = new Integer(Integer.parseInt(dadosUsu[14].toString()));
         
           this.main(new String[1]);
         

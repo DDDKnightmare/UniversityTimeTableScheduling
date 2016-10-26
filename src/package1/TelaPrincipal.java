@@ -30,7 +30,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     
     ButtonGroup bgConhe = new ButtonGroup();
     ButtonGroup bgElit = new ButtonGroup();
-    static LeitorDadosEntrada lde;
+    ;
     
     public TelaPrincipal() {
         initComponents();
@@ -970,7 +970,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         
         
         try {
-            lde =new LeitorDadosEntrada(dados);
+            LeitorDadosEntrada.lde = new LeitorDadosEntrada(dados);
             
 //        TelaProgresso tp = new TelaProgresso();
 //        tp.setVisible(true);

@@ -1354,14 +1354,13 @@ outroGene:
     }
     
     public void funcaoFitness () {
-       int nota = TelaPrincipal.lde.getNotaInicial();
-       int[] pesos = TelaPrincipal.lde.getPesos();
-       int pesoLacunasVazias  = pesos[0];
-       int pesoAlunosNaoMatriculados = 10*pesos[1];
-       int pesoAlunosParcialmenteMatriculados = pesos[1];
-       int pesoDisciplinasParcialmenteAlocadas = pesos[2];
-       int pesoProfessorOscioso = pesos[3];
-       int pesoMateriaNaoAlocada = pesos[4]; 
+       int nota = ld.notaInicial;
+       int pesoLacunasVazias  = ld.peso1;
+       int pesoAlunosNaoMatriculados = 10*ld.peso2;
+       int pesoAlunosParcialmenteMatriculados = ld.peso2;
+       int pesoDisciplinasParcialmenteAlocadas = ld.peso3;
+       int pesoProfessorOscioso = ld.peso4;
+       int pesoMateriaNaoAlocada = ld.peso5; 
        int lacunasVazias = 0;
        for(int i = 0; i<ld.qtdPeriodos;i++){
            lacunasVazias += verificaLacunasVazias(this.horario[i]);

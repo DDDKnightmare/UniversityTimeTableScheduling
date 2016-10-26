@@ -21,7 +21,12 @@ public class LeitorDados {
     public List<Disciplina> DisciplinasSemRestricao; 
     public List<Estudante> Estudantes; 
     public List<Professor> Professores; 
-    
+    public int peso1;
+    public int peso2;
+    public int peso3;
+    public int peso4;
+    public int peso5;
+    public int notaInicial;
     public short qtdTimeSlots;
     public short qtdPeriodos;    
     
