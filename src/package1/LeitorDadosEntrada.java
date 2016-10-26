@@ -174,9 +174,9 @@ public class LeitorDadosEntrada {
       
       while(Individuos.size() < numIndividuos){
           Individuo i = new Individuo(leitor);
-          i.horarioPrint();
+//          i.horarioPrint();
           Individuos.add(i);
-          tp.escreve("Fim do indivíduo "+(Individuos.size())+System.getProperty("line.separator"));
+//          tp.escreve("Fim do indivíduo "+(Individuos.size())+System.getProperty("line.separator"));
           //System.out.println("Fim do indivíduo "+(Individuos.size())+System.getProperty("line.separator"));
       }
 //      while(Arvore.getNumIndividuos() < numIndividuos){
@@ -197,12 +197,12 @@ public class LeitorDadosEntrada {
           }
       }
       //System.out.println("Iníncio algoritmo   -   População : "+numIndividuos + "   -   Número de gerações : "+numGeracoes);
-      tp.escreve("Iníncio algoritmo   -   População : "+numIndividuos + "   -   Número de gerações : "+numGeracoes);
+//      tp.escreve("Iníncio algoritmo   -   População : "+numIndividuos + "   -   Número de gerações : "+numGeracoes);
       for(contadorGeracoes = 0; contadorGeracoes < numGeracoes; contadorGeracoes ++){
           
           recombinar(taxaRecombinacao, elitismo);
           //System.out.println("Recombinação concluída - Geração atual: "+(contadorGeracoes+1));
-          tp.escreve("Recombinação concluída - Geração atual: "+(contadorGeracoes+1));
+//          tp.escreve("Recombinação concluída - Geração atual: "+(contadorGeracoes+1));
           if(Individuo.rng.nextFloat() < taxaMutacao){
               int mutar = (int)(Individuo.rng.nextFloat()*numIndividuos*taxaMutacao);
               mutar = mutar > 0? mutar : 1;
@@ -214,7 +214,7 @@ public class LeitorDadosEntrada {
                   aux.remove(indice);
                   mutar--;
                   //System.out.println("Mutação concluída - Restam "+mutar);
-                  tp.escreve("Mutação concluída - Restam "+mutar);
+//                  tp.escreve("Mutação concluída - Restam "+mutar);
                   Individuos.sort(new ComparadorDeNota());
                   
               }
@@ -224,13 +224,13 @@ public class LeitorDadosEntrada {
       }
       melhor = Individuos.get(Individuos.size()-1);
       //System.out.println("--------------------------------------------------------------------");
-      tp.escreve("--------------------------------------------------------------------");
+      tp.escreve(System.getProperty("line.separator")+"--------------------------------------------------------------------"+System.getProperty("line.separator"));
       
       melhor.horarioPrint();
       //System.out.println(""+System.getProperty("line.separator")+""+melhorNotaInicial);
-      tp.escreve(""+System.getProperty("line.separator")+""+melhorNotaInicial);
+      tp.escreve(""+System.getProperty("line.separator")+"Nota do melhor indivíduo da população inicial: "+melhorNotaInicial);
       //System.out.println(""+System.getProperty("line.separator")+""+melhor.getNota());
-      tp.escreve(""+System.getProperty("line.separator")+""+melhor.getNota());
+      tp.escreve(""+System.getProperty("line.separator")+"Nota do melhor indivíduo da população final: "+melhor.getNota());
       
       melhor.toCsv();
       Individuos.clear();
