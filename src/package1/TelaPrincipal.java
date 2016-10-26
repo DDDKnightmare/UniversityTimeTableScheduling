@@ -777,6 +777,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jLabelArqSaida.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabelArqSaida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelArqSaida.setText("Clique para selecionar...");
+        jLabelArqSaida.setToolTipText("Digite \"nomedoarquivo.csv\" ");
         jLabelArqSaida.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabelArqSaida.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
