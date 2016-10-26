@@ -18,6 +18,8 @@ public class LeitorDadosEntrada {
      * Exibe mensagens de erro
      * @param mensagem 
      */
+    
+    
     public static void Erro(String mensagem){
         System.out.println(mensagem);
     }
@@ -28,18 +30,26 @@ public class LeitorDadosEntrada {
     
     
     
-    private static int numGeracoes = 0;
+    private static int numGeracoes = 0;pegar da Interface
     private static int contadorGeracoes;
-    private static int numIndividuos = 0;
-    private static float taxaRecombinacao = 0;
-    private static boolean elitismo;
+    private static int numIndividuos = 0;pegar da Interface
+    private static float taxaRecombinacao = 0;pegar da Interface
+    private static boolean elitismo;pegar da Interface
     private static boolean accept = false;
-    private static String elite;
-    public static Scanner entrada = new Scanner(System.in);
-    private static float taxaMutacao = 0;
+//    private static String elite;
+//    public static Scanner entrada = new Scanner(System.in);
+    private static float taxaMutacao = 0;pegar da Interface
     private static int melhorNotaInicial;
-    private static int[] pesos = {1,1,1,1,1,1};
-    private static int notaInicial = 9500;
+    private static int[] pesos = {2,3,1,5,10};pegar da Interface 
+    /**{
+     * pesoLacunasVazias,
+     * pesoAlunosParcialmenteMatriculados,
+     * pesoDisciplinasParcialmenteAlocadas,
+     * pesoProfessorOscioso
+     * pesoMateriaNaoAlocada
+     * }
+     */
+    private static int notaInicial = 9500;pegar da Interface
     
     
     public static int getNotaInicial(){
@@ -63,59 +73,59 @@ public class LeitorDadosEntrada {
         
         
               
-      leitor.Executa("ag-informacoes.csv", "ag-restricoes.csv");
-//    leitor.Executa(enderecoArqInfo, enderecoArqRest);
+//      leitor.Executa("ag-informacoes.csv", "ag-restricoes.csv");
+    leitor.Executa(enderecoArqInfo, enderecoArqRest);
       
       
-      while(numIndividuos <= 1){
-          System.out.println("Digite o número de indivíduos desejados na população:(número inteiro maior que 1)");
-          numIndividuos = entrada.nextInt();
-      }
-      while(numGeracoes <= 0){
-          System.out.println("Digite o número de gerações desejados:(número inteiro maior que 0)");
-          numGeracoes = entrada.nextInt();
-      }
-      
-      while(taxaRecombinacao <= 0.0){
-          System.out.println("Digite a taxa de recombinação desejada(%)  OBS: no mínimo 2 indivíduos serão recombinados");
-          elite = entrada.next();
-          elite = elite.replace(" ", "").replace(",", ".").replaceAll("[\\D && [^\\.]]", "");
-          taxaRecombinacao = Float.parseFloat(elite) / 100;
-      }
-      
-      while(taxaMutacao <= 0.0){
-          System.out.println("Digite a taxa de mutação desejada(%)");
-          elite = entrada.next();
-          elite = elite.replace(" ", "").replace(",", ".").replaceAll("[\\D && [^\\.]]", "");
-          taxaMutacao = Float.parseFloat(elite) / 100;
-      }
-      
-      
-      elite = "";
-      while(!accept){
-          
-          System.out.println("Deseja que seja feito o uso de elitismo? Responda sim ou não");
-          elite = entrada.next();
-          elite = elite.replace(" ", "").toLowerCase();
-          elite = elite.length() > 1? (elite.length() > 2 ? elite.substring(0, 3) : elite) : elite.substring(0, 1);
-          switch(elite){
-              case "s": case "sim": case "y": case "yes":
-                  elitismo = true;
-                  accept = true;
-                  break;
-                  
-              case "n": case "nao": case "não": case "not": case "no":
-                  elitismo = false;
-                  accept = true;
-                break;
-              
-              default:
-                  System.out.println("Responda à pergunta com SIM ou NÃO");
-                  break;
-              
-          }
-          
-      }
+//      while(numIndividuos <= 1){
+//          System.out.println("Digite o número de indivíduos desejados na população:(número inteiro maior que 1)");
+//          numIndividuos = entrada.nextInt();
+//      }
+//      while(numGeracoes <= 0){
+//          System.out.println("Digite o número de gerações desejados:(número inteiro maior que 0)");
+//          numGeracoes = entrada.nextInt();
+//      }
+//      
+//      while(taxaRecombinacao <= 0.0){
+//          System.out.println("Digite a taxa de recombinação desejada(%)  OBS: no mínimo 2 indivíduos serão recombinados");
+//          elite = entrada.next();
+//          elite = elite.replace(" ", "").replace(",", ".").replaceAll("[\\D && [^\\.]]", "");
+//          taxaRecombinacao = Float.parseFloat(elite) / 100;
+//      }
+//      
+//      while(taxaMutacao <= 0.0){
+//          System.out.println("Digite a taxa de mutação desejada(%)");
+//          elite = entrada.next();
+//          elite = elite.replace(" ", "").replace(",", ".").replaceAll("[\\D && [^\\.]]", "");
+//          taxaMutacao = Float.parseFloat(elite) / 100;
+//      }
+//      
+//      
+//      elite = "";
+//      while(!accept){
+//          
+//          System.out.println("Deseja que seja feito o uso de elitismo? Responda sim ou não");
+//          elite = entrada.next();
+//          elite = elite.replace(" ", "").toLowerCase();
+//          elite = elite.length() > 1? (elite.length() > 2 ? elite.substring(0, 3) : elite) : elite.substring(0, 1);
+//          switch(elite){
+//              case "s": case "sim": case "y": case "yes":
+//                  elitismo = true;
+//                  accept = true;
+//                  break;
+//                  
+//              case "n": case "nao": case "não": case "not": case "no":
+//                  elitismo = false;
+//                  accept = true;
+//                break;
+//              
+//              default:
+//                  System.out.println("Responda à pergunta com SIM ou NÃO");
+//                  break;
+//              
+//          }
+//          
+//      }
       
       
       while(Individuos.size() < numIndividuos){
