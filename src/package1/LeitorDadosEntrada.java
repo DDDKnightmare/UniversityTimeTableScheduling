@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class LeitorDadosEntrada {
     
      Object[] dadosUsu;
-     TelaProgresso tp = new TelaProgresso();
+     static TelaProgresso tp = new TelaProgresso();
     
     public  List<Individuo> Individuos = new ArrayList<>();
             
@@ -34,9 +34,9 @@ public class LeitorDadosEntrada {
         numGeracoes = Integer.parseInt(dadosUsu[4].toString());
         
         numIndividuos = Integer.parseInt(dadosUsu[3].toString());
-        taxaRecombinacao = Integer.parseInt(dadosUsu[5].toString());
+        taxaRecombinacao = Integer.parseInt(dadosUsu[5].toString())/100;
         elitismo = (boolean) dadosUsu[7];
-        taxaMutacao = Integer.parseInt(dadosUsu[5].toString());
+        taxaMutacao = Integer.parseInt(dadosUsu[5].toString())/100;
 //        System.out.println(Integer.parseInt(dadosUsu[9].toString()));
 
         
@@ -225,10 +225,12 @@ public class LeitorDadosEntrada {
       tp.escreve("--------------------------------------------------------------------");
       
       melhor.horarioPrint();
-      //System.out.println("\n"+melhorNotaInicial);
-      tp.escreve("\n"+melhorNotaInicial);
-      //System.out.println("\n"+melhor.getNota());
-      tp.escreve("\n"+melhor.getNota());
+      //System.out.println(""+System.getProperty("line.separator")+""+melhorNotaInicial);
+      tp.escreve(""+System.getProperty("line.separator")+""+melhorNotaInicial);
+      //System.out.println(""+System.getProperty("line.separator")+""+melhor.getNota());
+      tp.escreve(""+System.getProperty("line.separator")+""+melhor.getNota());
+      
+      
       
     }
    

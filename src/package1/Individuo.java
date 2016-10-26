@@ -1620,30 +1620,30 @@ outroGene:
     public void horarioPrint(){
         
         
-        System.out.print("         ");
+        LeitorDadosEntrada.tp.escreve("         ");
         for(int i = 0; i<ld.qtdPeriodos; i++){
             if(i<9)
-                System.out.print("|p"+(i+1)+"  ");
+                LeitorDadosEntrada.tp.escreve("|p"+(i+1)+"  ");
             
             else
-                System.out.print("|p"+(i+1)+" ");
+                LeitorDadosEntrada.tp.escreve("|p"+(i+1)+" ");
         }
-        System.out.print("\n");
+        LeitorDadosEntrada.tp.escreve(""+System.getProperty("line.separator")+"");
         for(int i = 23; i< 168; i++){
             if(i<100)
-                System.out.print("slot  "+ i +":");
+                LeitorDadosEntrada.tp.escreve("slot  "+ i +":");
             else
-                System.out.print("slot "+ i +":");
+                LeitorDadosEntrada.tp.escreve("slot "+ i +":");
             for(int j = 0; j< 32; j++){
                 if(horario[j][i] == null){
                     
-                    System.out.print("|    ");
+                    LeitorDadosEntrada.tp.escreve("|    ");
                 }
                 else{
                     if(horario[j][i].getDisciplina().codigo <1000)
-                        System.out.print("|"+horario[j][i].getDisciplina().codigo + " ");
+                        LeitorDadosEntrada.tp.escreve("|"+horario[j][i].getDisciplina().codigo + " ");
                     else
-                        System.out.print("|"+horario[j][i].getDisciplina().codigo);
+                        LeitorDadosEntrada.tp.escreve("|"+horario[j][i].getDisciplina().codigo);
                 }
                 
             }

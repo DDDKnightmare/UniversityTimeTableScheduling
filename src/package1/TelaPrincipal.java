@@ -978,7 +978,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
 ////        tp.escreve(Integer.parseInt(dados[4].toString())+"");
 //        
 //        for(int i=0; i<15;i++){
-//            tp.escreve(i+" " +dados[i].toString()+"\n");
+//            tp.escreve(i+" " +dados[i].toString()+""+System.getProperty("line.separator")+"");
 //        }
         } catch (IOException ex) {
             Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
