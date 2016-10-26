@@ -24,6 +24,10 @@ public class TelaProgresso extends javax.swing.JFrame {
     public void escreve(String texto){
         jTextArea1.append(texto);
     }
+    
+    public void limpaTela(){
+        jTextArea1.setText("");
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

@@ -27,17 +27,32 @@ public class TelaInfo extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("UCTP");
+        setType(java.awt.Window.Type.UTILITY);
+
+        jTextPane1.setEditable(false);
+        jTextPane1.setText("\tO UCTP (University Course Timetabling Problem) consiste no problema de se estabelecer um horário, um agendamento das aulas, professores, alunos, salas, etc.\n\tÉ considerado um problema da classe NP-hard além de influenciar diretamente na vida dos estudantes, professores, nos recursos da faculdade entre outros aspectos. Por causa dessa importância e complexidade, diversos trabalhos em todo o mundo têm sido desenvolvidos desde os anos 60 para sua melhor solução.\n\tPor definição temos que um problema de agendamento é: 'alocação, sujeita a restrições, dos recursos dados aos objetos sendo colocados em cada espaço de tempo, de uma maneira para satisfazer um conjunto de objetivos desejáveis'(Louis et al. 2009).");
+        jScrollPane1.setViewportView(jTextPane1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 503, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -79,5 +94,7 @@ public class TelaInfo extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextPane jTextPane1;
     // End of variables declaration//GEN-END:variables
 }

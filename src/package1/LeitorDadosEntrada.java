@@ -113,6 +113,7 @@ public class LeitorDadosEntrada {
 //        TelaProgresso tp = new TelaProgresso();
             tp.setVisible(true);
             tp.setLocationRelativeTo(null);
+            tp.limpaTela();
 
         
         
