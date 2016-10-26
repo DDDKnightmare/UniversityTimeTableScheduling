@@ -1668,7 +1668,7 @@ outroGene:
     public void horarioPrint(){
         
         
-        LeitorDadosEntrada.tp.escreve("                 ");
+        LeitorDadosEntrada.tp.escreve("                ");
         for(int i = 0; i<ld.qtdPeriodos; i++){
             if(i<9)
                 LeitorDadosEntrada.tp.escreve("|p"+(i+1)+"      ");
@@ -1682,9 +1682,9 @@ outroGene:
         LeitorDadosEntrada.tp.escreve(System.getProperty("line.separator"));
         for(int i = 23; i< 168; i++){
             if(i<100)
-                LeitorDadosEntrada.tp.escreve("slot  "+ i +":  ");
+                LeitorDadosEntrada.tp.escreve("slot  "+ i +": ");
             else
-                LeitorDadosEntrada.tp.escreve("slot "+ i +": ");
+                LeitorDadosEntrada.tp.escreve("slot "+ i +":");
             for(int j = 0; j< 32; j++){
                 if(horario[j][i] == null){
                     
