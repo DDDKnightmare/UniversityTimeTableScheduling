@@ -1354,8 +1354,8 @@ outroGene:
     }
     
     public void funcaoFitness () {
-       int nota = LeitorDadosEntrada.getNotaInicial();
-       int[] pesos = LeitorDadosEntrada.getPesos();
+       int nota = TelaPrincipal.lde.getNotaInicial();
+       int[] pesos = TelaPrincipal.lde.getPesos();
        int pesoLacunasVazias  = pesos[0];
        int pesoAlunosNaoMatriculados = 10*pesos[1];
        int pesoAlunosParcialmenteMatriculados = pesos[1];

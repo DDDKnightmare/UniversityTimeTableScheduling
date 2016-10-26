@@ -37,13 +37,16 @@ public class LeitorDadosEntrada {
         taxaRecombinacao = Integer.parseInt(dadosUsu[5].toString());
         elitismo = (boolean) dadosUsu[7];
         taxaMutacao = Integer.parseInt(dadosUsu[5].toString());
-        System.out.println(Integer.parseInt(dadosUsu[9].toString()));
-        pesos[0]=Integer.parseInt(dadosUsu[9].toString());
+//        System.out.println(Integer.parseInt(dadosUsu[9].toString()));
+
         
-        pesos[1]=Integer.parseInt(dadosUsu[10].toString());
-        pesos[2]=Integer.parseInt(dadosUsu[11].toString());
-        pesos[3]=Integer.parseInt(dadosUsu[12].toString());
-        pesos[4]=Integer.parseInt(dadosUsu[13].toString());
+        peso1 = Integer.parseInt(dadosUsu[9].toString());
+        peso2 = Integer.parseInt(dadosUsu[10].toString());
+        peso3 = Integer.parseInt(dadosUsu[11].toString());
+        peso4 = Integer.parseInt(dadosUsu[12].toString());
+        peso5 = Integer.parseInt(dadosUsu[13].toString());
+        
+        
 
         
         notaInicial = Integer.parseInt(dadosUsu[14].toString());
@@ -54,7 +57,11 @@ public class LeitorDadosEntrada {
     }
     
     
-    
+    int peso1;
+    int peso2;
+    int peso3;
+    int peso4;
+    int peso5;
     public  int numGeracoes;
     private  int contadorGeracoes;
     private  int numIndividuos;
@@ -65,7 +72,7 @@ public class LeitorDadosEntrada {
 //    public  Scanner entrada = new Scanner(System.in);
     private  float taxaMutacao ;
     private  int melhorNotaInicial;
-    private  int[] pesos;
+    public int[] pesos= {peso1, peso2, peso3, peso4, peso5};
     /**{
      * pesoLacunasVazias,
      * pesoAlunosParcialmenteMatriculados,
@@ -95,6 +102,9 @@ public class LeitorDadosEntrada {
     
     public  void main(String[] args) throws IOException {
       
+        
+
+        
 //        TelaProgresso tp = new TelaProgresso();
             tp.setVisible(true);
             tp.setLocationRelativeTo(null);
