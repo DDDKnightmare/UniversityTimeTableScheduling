@@ -1383,10 +1383,34 @@ outroGene:
    
    }
     
+    public int verificaLacunasVazias(Gene[] coluna){
+        int numAulas;
+        int aux = 0;
+        int cont = 0;
+        disciplina:
+        for(Disciplina d : ld.Disciplinas){
+            numAulas = d.cargaHorariaPratica + d.cargaHorariaTeoria;
+            for(int i = 0; i < ld.qtdTimeSlots; i ++){
+                if(!Objects.isNull(horario[this.mapaCursoPeriodo(d)][i]) && horario[this.mapaCursoPeriodo(d)][i].getDisciplina() == d){
+                    aux ++;
+                }
+                if(aux == numAulas){
+                    aux = 0;
+                    continue disciplina;
+                
+                }
+                if(i == 167 && aux < numAulas){
+                    cont = cont + aux;
+                }
+            }
+            
+        }
+        
+        return cont;
+    }
     
     
-    
-    public int verificaLacunasVazias(Gene[] coluna ) {
+   /* public int verificaLacunasVazias(Gene[] coluna ) {
         if(Objects.isNull(coluna)){
             return ld.qtdTimeSlots;
         }
@@ -1400,7 +1424,7 @@ outroGene:
         
         
         return lacunas;
-        }
+        }*/
 
     private int[] verificaAlunosNaoMatriculados(List<Estudante> estudantes) {
         int alunos = 0; // não matriculado em nenhuma disciplina
