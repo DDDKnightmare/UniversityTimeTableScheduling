@@ -1359,9 +1359,9 @@ outroGene:
        int pesoLacunasVazias  = ld.peso1;
        int pesoAlunosNaoMatriculados = 10*ld.peso2;
        int pesoAlunosParcialmenteMatriculados = ld.peso2;
-       int pesoDisciplinasParcialmenteAlocadas = ld.peso3;
+//       int pesoDisciplinasParcialmenteAlocadas = ld.peso3;
        int pesoProfessorOscioso = ld.peso4;
-       int pesoMateriaNaoAlocada = ld.peso5; 
+//       int pesoMateriaNaoAlocada = ld.peso5; 
        int lacunasVazias = 0;
        for(int i = 0; i<ld.qtdPeriodos;i++){
            lacunasVazias += verificaLacunasVazias(i);
@@ -1374,9 +1374,9 @@ outroGene:
                - pesoLacunasVazias*lacunasVazias 
                - pesoAlunosNaoMatriculados*alunosNaoMatriculados[0]
                - pesoAlunosParcialmenteMatriculados*alunosNaoMatriculados[1] 
-               - pesoDisciplinasParcialmenteAlocadas*materiasNaoAlocadas[1]
-               - pesoProfessorOscioso*professoresOsciosos 
-               - pesoMateriaNaoAlocada*materiasNaoAlocadas[0]; 
+//               - pesoDisciplinasParcialmenteAlocadas*materiasNaoAlocadas[1]
+               - pesoProfessorOscioso*professoresOsciosos ;
+//               - pesoMateriaNaoAlocada*materiasNaoAlocadas[0]; 
  
        
        this.nota = nota;

@@ -423,8 +423,8 @@ public class LeitorDadosEntrada {
                         }
                     }
                     if(!individuo1.getGenesNaoAlocados().contains(g) && !Objects.isNull(g.getTimeSlot())){
-                        individuo1.horario[individuo1.mapaCursoPeriodo(d)][g.getTimeSlot().codigo - 1] = g;
-                        individuo1.removerConcorrentes(g);
+                        individuo2.horario[individuo1.mapaCursoPeriodo(d)][g.getTimeSlot().codigo - 1] = g;
+                        individuo2.removerConcorrentes(g);
                     }else{
                         individuo1.getGenesNaoAlocados().remove(g);
                         individuo2.getGenesNaoAlocados().add(g);
@@ -477,9 +477,9 @@ public class LeitorDadosEntrada {
                             }
                         }
                     }
-                    if(!individuo2.getGenesNaoAlocados().contains(g)){
-                        individuo2.horario[individuo2.mapaCursoPeriodo(d)][g.getTimeSlot().codigo - 1] = g;
-                        individuo2.removerConcorrentes(g);
+                    if(!individuo2.getGenesNaoAlocados().contains(g) && !Objects.isNull(g.getTimeSlot())){
+                        individuo1.horario[individuo1.mapaCursoPeriodo(d)][g.getTimeSlot().codigo - 1] = g;
+                        individuo1.removerConcorrentes(g);
                     }else{
                         individuo2.getGenesNaoAlocados().remove(g);
                         individuo1.getGenesNaoAlocados().add(g);
