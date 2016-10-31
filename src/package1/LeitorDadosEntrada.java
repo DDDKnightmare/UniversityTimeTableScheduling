@@ -34,9 +34,9 @@ public class LeitorDadosEntrada {
         numGeracoes = Integer.parseInt(dadosUsu[4].toString());
         
         numIndividuos = Integer.parseInt(dadosUsu[3].toString());
-        taxaRecombinacao = Integer.parseInt(dadosUsu[5].toString())/100;
+        taxaRecombinacao = Float.parseFloat(dadosUsu[5].toString())/100;
         elitismo = (boolean) dadosUsu[7];
-        taxaMutacao = Integer.parseInt(dadosUsu[5].toString())/100;
+        taxaMutacao = Float.parseFloat(dadosUsu[5].toString())/100;
 //        System.out.println(Integer.parseInt(dadosUsu[9].toString()));
 
         
@@ -378,7 +378,6 @@ public class LeitorDadosEntrada {
     }
     
     private  void substituiListas(Individuo individuo1, Individuo individuo2, List<List<Gene>> genes1, List<List<Gene>> genes2){
-        List<List<Gene>> aux = new ArrayList<>();
         for(List<Gene> l : genes1){
                 Disciplina d = l.get(0).getDisciplina();
                 if(Objects.isNull(l.get(0).getDisciplina().timeSlotsPossiveis)
@@ -423,9 +422,12 @@ public class LeitorDadosEntrada {
                             }
                         }
                     }
-                    if(!Objects.isNull(g.getTimeSlot())){
-                        individuo2.horario[individuo2.mapaCursoPeriodo(d)][g.getTimeSlot().codigo - 1] = g;
-                        individuo2.removerConcorrentes(g);
+                    if(!individuo1.getGenesNaoAlocados().contains(g) && !Objects.isNull(g.getTimeSlot())){
+                        individuo1.horario[individuo1.mapaCursoPeriodo(d)][g.getTimeSlot().codigo - 1] = g;
+                        individuo1.removerConcorrentes(g);
+                    }else{
+                        individuo1.getGenesNaoAlocados().remove(g);
+                        individuo2.getGenesNaoAlocados().add(g);
                     }
                 }
                 
@@ -475,9 +477,12 @@ public class LeitorDadosEntrada {
                             }
                         }
                     }
-                    if(!Objects.isNull(g.getTimeSlot())){
-                        individuo1.horario[individuo1.mapaCursoPeriodo(d)][g.getTimeSlot().codigo - 1] = g;
-                        individuo1.removerConcorrentes(g);
+                    if(!individuo2.getGenesNaoAlocados().contains(g)){
+                        individuo2.horario[individuo2.mapaCursoPeriodo(d)][g.getTimeSlot().codigo - 1] = g;
+                        individuo2.removerConcorrentes(g);
+                    }else{
+                        individuo2.getGenesNaoAlocados().remove(g);
+                        individuo1.getGenesNaoAlocados().add(g);
                     }
                 }
                 

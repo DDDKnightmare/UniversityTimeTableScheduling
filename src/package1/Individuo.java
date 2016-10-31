@@ -1364,7 +1364,7 @@ outroGene:
        int pesoMateriaNaoAlocada = ld.peso5; 
        int lacunasVazias = 0;
        for(int i = 0; i<ld.qtdPeriodos;i++){
-           lacunasVazias += verificaLacunasVazias(this.horario[i]);
+           lacunasVazias += verificaLacunasVazias(i);
        }
        int[] alunosNaoMatriculados = verificaAlunosNaoMatriculados(ld.Estudantes);
        int professoresOsciosos = verificaProfessoresOciosos(ld.Professores);
@@ -1382,16 +1382,15 @@ outroGene:
        this.nota = nota;
    
    }
-    public int verificaLacunasVazias(Gene[] coluna){
+    public int verificaLacunasVazias(int coluna){
         int cont=0;
         disciplina:
         for(Gene g : GenesNaoAlocados){
-            for(Gene h : coluna){
-            if(g.getDisciplina().codigo == h.getDisciplina().codigo){
+            
+            if(mapaCursoPeriodo(g.getDisciplina()) == coluna){
                 cont++;
-                continue disciplina;
             }
-        }
+            
         }
         return cont;
         
@@ -1422,7 +1421,7 @@ outroGene:
         }
         
         return cont;
-    }
+    }*/
     
     
     public int verificaLacunasVazias(Gene[] coluna ) {
@@ -1439,7 +1438,7 @@ outroGene:
         
         
         return lacunas;
-        }*/
+        }
 
     private int[] verificaAlunosNaoMatriculados(List<Estudante> estudantes) {
 
