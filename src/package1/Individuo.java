@@ -1382,8 +1382,21 @@ outroGene:
        this.nota = nota;
    
    }
-    
     public int verificaLacunasVazias(Gene[] coluna){
+        int cont=0;
+        disciplina:
+        for(Gene g : GenesNaoAlocados){
+            for(Gene h : coluna){
+            if(g.getDisciplina().codigo == h.getDisciplina().codigo){
+                cont++;
+                continue disciplina;
+            }
+        }
+        }
+        return cont;
+        
+    }
+    /*public int verificaLacunasVazias(Gene[] coluna){
         int numAulas;
         int aux = 0;
         int cont = 0;
@@ -1400,7 +1413,9 @@ outroGene:
                 
                 }
                 if(i == 167 && aux < numAulas){
-                    cont = cont + aux;
+                    cont = cont + (numAulas - aux);
+                    aux = 0;
+                    continue disciplina;
                 }
             }
             
@@ -1410,7 +1425,7 @@ outroGene:
     }
     
     
-   /* public int verificaLacunasVazias(Gene[] coluna ) {
+    public int verificaLacunasVazias(Gene[] coluna ) {
         if(Objects.isNull(coluna)){
             return ld.qtdTimeSlots;
         }
@@ -1427,6 +1442,7 @@ outroGene:
         }*/
 
     private int[] verificaAlunosNaoMatriculados(List<Estudante> estudantes) {
+
         int alunos = 0; // não matriculado em nenhuma disciplina
         int disciplinas = 0; // não matriculado em algumas disciplinas
         int aulas; // número de aulas da disciplina encontrados no horário
